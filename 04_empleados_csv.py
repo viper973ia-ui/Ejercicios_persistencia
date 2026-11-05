@@ -54,7 +54,7 @@ with open ("empleados.csv","r") as f:
 
 with open ("empleados.csv","r") as f:
     print("***********   CONSULTA Empleado + SALARIO  ***********")
-    datos=list(csv.DictReader(f))
+    datos=list(csv.DictReader(f))   #Es una LISTA de DICCIONARIOS
     empleado_top = max(datos, key=lambda x: float(x["salario"]))
     print(f"Empleado: {empleado_top['empleado']} | Salario: {empleado_top['salario']}")
     print ("=====================================================")
