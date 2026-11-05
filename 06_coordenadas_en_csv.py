@@ -8,6 +8,7 @@ import math
 #de coordenadas
 coordenadas=[]
 def distancia(punto1,punto2):
+    #return math.dist(punto1,punto2)
    return math.hypot(punto1[0]-punto2[0],punto1[1]-punto2[1]) 
 resp="S"
 while resp=="S" or resp=="s":
