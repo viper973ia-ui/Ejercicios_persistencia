@@ -22,7 +22,6 @@ try:
         puntos = [
             (int(fila[0]), int(fila[1])) 
             for fila in coord_reader 
-            if fila
         ]
         
     # 3. Utilizar la función min() para encontrar la coordenada más cercana
