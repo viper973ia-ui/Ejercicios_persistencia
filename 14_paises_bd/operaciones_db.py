@@ -62,9 +62,7 @@ def crear_paises(paises):  # [{"pais":"pais1,","poblacion":333,"bandera":"http:.
          # ya que mysql-connector requiere este formato: [("Asia",), ("Americas",), ...]
          #lista_tuplas = [(p["pais"],p["poblacion"],p["bandera"],p["idContinente"]) for p in paises]
          lista_tuplas=[tuple(p.values()) for p in paises ]
-         print("//////////////////////////////////////////////////////")
-         print(lista_tuplas)
-         print("//////////////////////////////////////////////////////")
+    
          
          try:
              # Insertamos todos los registros de un solo golpe
