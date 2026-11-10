@@ -56,7 +56,7 @@ def crear_paises(paises):  # [{"pais":"pais1,","poblacion":333,"bandera":"http:.
          
          # Preparamos la consulta SQL. 
          # Asumo que tu tabla tiene una columna llamada 'nombre' (o similar)
-         sql = "INSERT INTO paises (idpais,pais,población,bandera,idContinente) VALUES(%s,%s,%s,%s,%s)"
+         sql = "INSERT INTO paises (pais,poblacion,bandera,idContinente) VALUES(%s,%s,%s,%s)"
          
          # Transformamos la lista de strings en una lista de tuplas, 
          # ya que mysql-connector requiere este formato: [("Asia",), ("Americas",), ...]
