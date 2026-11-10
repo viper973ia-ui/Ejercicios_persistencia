@@ -7,7 +7,7 @@
     -Llamará a las funciones para guardar continentes y guardar paises
     
 """
-import operaciones_bd as opbd
+import operaciones_db as opbd
 import operaciones_json as opjs
 
     
@@ -17,10 +17,12 @@ opbd.crear_continentes(continentes)
 continentes_bd=opbd.devolver_continentes() #[{"continente":"Asia",idContinente":3},.]
 paises=opjs.paises() #[{"name":"España","region":"Europe"}]
 def obtener_idcontinente(continente):
-    return [c["idContinente"] for c in continentes_bd if c["continente"]==continente][0]
+    #return [c["idContinente"] for c in continentes_bd if c["continente"]==continente][0]
+    return [c[0] for c in continentes_bd if c[1] == continente][0]
 #formateamos la lista de paises tal y como lo espera la función crear_paises
 paises_para_bd=[{"pais":p["name"],
                  "poblacion":p["population"],
                  "bandera":p["flags"]["png"],"idContinente":obtener_idcontinente(p["region"])} for p in paises]
+print(paises_para_bd)
 opbd.crear_paises(paises_para_bd)
 print("Datos almacenados!!!") 
