@@ -99,7 +99,11 @@ elif opcion == "Buscar por curso":
                 columnas[1].write(alumno["nombre"])
                 columnas[2].write(alumno["email"])
                 columnas[3].write(alumno["curso"])
-                columnas[4].write(alumno["nota"])
+                #columnas[4].write(alumno["nota"])
+                columnas[4].markdown(
+                                    f"<p style='font-size: 28px; font-weight: bold;'>{alumno['nota']}</p>",
+                                    unsafe_allow_html=True 
+                )
 
                 with columnas[5]:
                     eliminar = st.button(
