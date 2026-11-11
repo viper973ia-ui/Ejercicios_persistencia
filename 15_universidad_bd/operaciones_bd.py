@@ -223,4 +223,30 @@ def obtener_cursos():
     finally:
 
         cursor.close()
-        conexion.close()
+
+# ============================================================
+# ACTUALIZAR ALUMNO
+# ============================================================
+
+def actualizar_alumno(dni, nombre, email, curso, nota):
+    conexion = None
+    try:
+        conexion = conectar()  # Reemplaza 'conectar()' por el nombre exacto de tu función de conexión
+        cursor = conexion.cursor()
+        sql = """
+            UPDATE alumnos
+            SET nombre = %s, email = %s, curso = %s, nota = %s
+            WHERE dni = %s
+        """
+        cursor.execute(sql, (nombre, email, curso, nota, dni))
+        conexion.commit()
+
+        if cursor.rowcount > 0:
+            return True, "Alumno actualizado correctamente."
+        else:
+            return False, "No se realizaron cambios o no existe el alumno."
+    except Exception as e:
+        return False, f"Error al actualizar: {e}"
+    finally:
+        if conexion:
+            conexion.close()

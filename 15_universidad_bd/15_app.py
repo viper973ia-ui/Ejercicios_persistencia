@@ -12,9 +12,12 @@ de ese curso. En cada fila, aparecerá un botón para borrar a ese alumno
 -Busqueda de alumno por dni. Se introduce el dni de un alumno
 y se muestran todos sus datos, si no existe, mensaje de advertencia.  """
 
-
+import importlib
 import streamlit as st
 import operaciones_bd as op2
+
+#st.write("📂 Ruta real del archivo cargado:", op2.__file__)
+#st.write("📋 Funciones disponibles:", dir(op2))
 
 # ============================================================
 # CONFIGURACIÓN STREAMLIT
