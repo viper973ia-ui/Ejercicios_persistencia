@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<!-- saved from url=(0089)https://apps.abacus.ai/conversationFiles/131e13e0d2/output/algoritmo_gestion_alumnos.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algoritmo de Gestión de Alumnos · 3D Interactivo</title>
+<style>
+:root{
+  --bg:#02030f; --bg2:#070a1f; --cyan:#4de1ff; --violet:#c18bff;
+  --green:#00ff88; --red:#ff4466; --txt:#e8ecff; --muted:#8a93c4;
+  --card:rgba(255,255,255,.04); --border:rgba(140,160,255,.22);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,Arial,sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;line-height:1.5}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none}
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 20px}
+
+/* HERO */
+.hero{min-height:88vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;position:relative}
+.badge{display:inline-flex;gap:8px;align-items:center;padding:8px 18px;border-radius:30px;background:var(--card);border:1px solid var(--border);color:var(--cyan);font-size:.8rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:26px;backdrop-filter:blur(8px)}
+.hero h1{font-size:clamp(2.2rem,6vw,4.6rem);font-weight:800;letter-spacing:-1px;line-height:1.05;background:linear-gradient(100deg,#8ea2ff 0%,#4de1ff 40%,#c18bff 80%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 40px rgba(77,225,255,.35))}
+.hero p{max-width:640px;color:var(--muted);font-size:clamp(1rem,2.2vw,1.25rem);margin:22px 0 36px}
+.hero .files{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.chip{padding:10px 20px;border-radius:14px;background:var(--card);border:1px solid var(--border);font-family:'Consolas',monospace;font-size:.9rem}
+.chip b{color:var(--cyan)}
+.chip:nth-child(2) b{color:var(--violet)}
+.scroll-hint{position:absolute;bottom:30px;color:var(--muted);font-size:.8rem;animation:bob 1.8s infinite}
+@keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(10px);opacity:1}}
+
+/* PIPELINE OVERVIEW */
+.pipe{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:stretch;margin:10px 0 60px}
+.pipe .layer{flex:1;min-width:150px;padding:20px;border-radius:18px;background:var(--card);border:1px solid var(--border);text-align:center;position:relative;transition:.3s}
+.pipe .layer:hover{transform:translateY(-6px);border-color:var(--cyan);box-shadow:0 10px 40px rgba(77,225,255,.2)}
+.pipe .layer .ic{font-size:2rem;margin-bottom:10px}
+.pipe .layer h4{font-size:1rem;margin-bottom:4px}
+.pipe .layer small{color:var(--muted);font-size:.78rem;font-family:monospace}
+.pipe .arrow{display:flex;align-items:center;color:var(--cyan);font-size:1.6rem;animation:flow 1.5s infinite}
+@keyframes flow{0%,100%{opacity:.3;transform:translateX(0)}50%{opacity:1;transform:translateX(5px)}}
+
+.section-title{text-align:center;margin:60px 0 10px}
+.section-title h2{font-size:clamp(1.6rem,4vw,2.6rem);font-weight:800}
+.section-title p{color:var(--muted);margin-top:8px}
+
+/* TABS */
+.tabs{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:34px 0 10px;position:sticky;top:0;z-index:20;padding:16px 0;background:linear-gradient(180deg,var(--bg) 60%,transparent)}
+.tab{display:flex;align-items:center;gap:10px;padding:14px 22px;border-radius:16px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:.25s;font-weight:600;font-size:.95rem;color:var(--txt)}
+.tab .dot{width:12px;height:12px;border-radius:50%;box-shadow:0 0 12px currentColor}
+.tab:hover{transform:translateY(-3px)}
+.tab.active{background:rgba(255,255,255,.09);box-shadow:0 8px 30px rgba(0,0,0,.4)}
+
+/* FLOW DIAGRAM */
+.panel{display:none;animation:fade .5s}
+.panel.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.op-head{text-align:center;margin:26px 0 36px}
+.op-head h3{font-size:1.9rem}
+.op-head p{color:var(--muted);margin-top:6px}
+
+.flow{display:flex;flex-direction:column;align-items:center;gap:0}
+.node{width:min(560px,92%);padding:20px 22px;border-radius:18px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:.28s;position:relative;backdrop-filter:blur(6px)}
+.node:hover{transform:scale(1.03);box-shadow:0 12px 44px rgba(0,0,0,.5)}
+.node .row{display:flex;align-items:center;gap:14px}
+.node .nic{width:46px;height:46px;flex:none;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:rgba(255,255,255,.06)}
+.node .ntxt h4{font-size:1.05rem}
+.node .ntxt small{color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:1px}
+.node .hintbtn{margin-left:auto;color:var(--muted);font-size:.8rem;border:1px solid var(--border);padding:5px 12px;border-radius:20px;white-space:nowrap}
+.node.t-user{border-left:4px solid #ffd36e}
+.node.t-streamlit{border-left:4px solid var(--cyan)}
+.node.t-python{border-left:4px solid var(--violet)}
+.node.t-connection{border-left:4px solid #ff9f4d}
+.node.t-sql{border-left:4px solid #6ee7ff}
+.node.t-result{border-left:4px solid var(--green)}
+.node.t-error{border-left:4px solid var(--red)}
+.connector{width:3px;height:40px;background:linear-gradient(var(--cyan),transparent);position:relative;overflow:hidden}
+.connector::after{content:'';position:absolute;top:-10px;left:-1.5px;width:6px;height:16px;border-radius:4px;background:var(--cyan);box-shadow:0 0 12px var(--cyan);animation:drop 1.4s linear infinite}
+@keyframes drop{0%{top:-16px;opacity:0}20%{opacity:1}100%{top:40px;opacity:0}}
+.branch{width:min(560px,92%);margin:-6px 0 6px;display:flex;justify-content:flex-end}
+.branch .err{font-size:.82rem;color:var(--red);background:rgba(255,68,102,.08);border:1px dashed rgba(255,68,102,.4);padding:6px 14px;border-radius:12px;max-width:70%}
+
+/* MODAL */
+.overlay{position:fixed;inset:0;background:rgba(2,3,15,.82);backdrop-filter:blur(6px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay.open{display:flex;animation:fade .3s}
+.modal{max-width:720px;width:100%;max-height:88vh;overflow:auto;background:var(--bg2);border:1px solid var(--border);border-radius:22px;padding:30px}
+.modal .mhead{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.modal .mhead .nic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;background:rgba(255,255,255,.06)}
+.modal h3{font-size:1.4rem}
+.modal .close{margin-left:auto;cursor:pointer;font-size:1.6rem;color:var(--muted);line-height:1}
+.modal .desc{color:#c3cbf0;margin-bottom:18px}
+.lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--cyan);margin:18px 0 8px;font-weight:700}
+.lbl.sql{color:#6ee7ff}.lbl.ok{color:var(--green)}.lbl.err{color:var(--red)}
+pre{background:#05081c;border:1px solid var(--border);border-radius:14px;padding:16px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.86rem;line-height:1.6}
+pre code{white-space:pre}
+.msg{padding:12px 16px;border-radius:12px;font-size:.9rem;margin-top:6px}
+.msg.ok{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.35);color:#9affcf}
+.msg.err{background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.35);color:#ffb3c2}
+ul.cases{list-style:none;margin-top:6px}
+ul.cases li{padding:8px 14px;border-radius:10px;background:rgba(255,68,102,.06);border-left:3px solid var(--red);margin-bottom:6px;font-size:.86rem;color:#ffc2cf}
+
+/* SYNTAX */
+.tok-kw{color:#ff79c6}.tok-str{color:#9affcf}.tok-com{color:#6272a4;font-style:italic}.tok-fn{color:#4de1ff}.tok-num{color:#ffd36e}.tok-dec{color:#c18bff}
+
+/* DB SCHEMA */
+.db-wrap{display:flex;justify-content:center;margin:30px 0}
+.db-table{width:min(560px,96%);border-radius:18px;overflow:hidden;border:1px solid var(--border);background:var(--card)}
+.db-table .th{padding:16px 20px;background:linear-gradient(90deg,rgba(77,225,255,.18),rgba(193,139,255,.12));font-weight:700;font-size:1.1rem;display:flex;align-items:center;gap:10px}
+.db-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-top:1px solid var(--border);transition:.2s}
+.db-row:hover{background:rgba(255,255,255,.04)}
+.db-row .key{width:42px;text-align:center}
+.db-row .cn{font-family:monospace;font-weight:700;min-width:90px;color:var(--cyan)}
+.db-row .ct{font-family:monospace;font-size:.8rem;color:var(--violet);background:rgba(193,139,255,.1);padding:2px 10px;border-radius:8px}
+.db-row .cd{color:var(--muted);font-size:.84rem}
+.pk-badge{font-size:.65rem;background:#ffd36e;color:#000;padding:2px 7px;border-radius:6px;font-weight:800;margin-left:6px}
+
+/* CODE VIEWER */
+.cv-tabs{display:flex;gap:10px;justify-content:center;margin:24px 0}
+.cv-tab{padding:10px 20px;border-radius:12px;background:var(--card);border:1px solid var(--border);cursor:pointer;font-family:monospace;font-size:.88rem}
+.cv-tab.active{background:rgba(255,255,255,.09);color:var(--cyan);border-color:var(--cyan)}
+.cv-body{display:none}.cv-body.active{display:block}
+footer{text-align:center;padding:60px 20px 40px;color:var(--muted);font-size:.85rem}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:rgba(140,160,255,.3);border-radius:10px}
+</style>
+</head>
+<body>
+<canvas id="stars" width="1920" height="911"></canvas>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <span class="badge">◉ Algoritmo Interactivo</span>
+    <h1>Gestión de Alumnos<br>Flujo Visual del Programa</h1>
+    <p>Explora paso a paso cómo trabajan juntos la interfaz y la capa de base de datos. Haz clic en cada nodo para ver el código real, la consulta SQL y los casos de error.</p>
+    <div class="files">
+      <span class="chip">🖥️ <b>15_app.py</b> · Interfaz</span>
+      <span class="chip">🗄️ <b>operaciones_bd.py</b> · Base de datos</span>
+    </div>
+    <div class="scroll-hint">↓ Desliza para explorar</div>
+  </section>
+
+  <!-- PIPELINE -->
+  <div class="section-title"><h2>Arquitectura General</h2><p>El viaje de los datos de principio a fin</p></div>
+  <div class="pipe">
+    <div class="layer"><div class="ic">👤</div><h4>Usuario</h4><small>Interactúa</small></div>
+    <div class="arrow">→</div>
+    <div class="layer"><div class="ic">🖥️</div><h4>Streamlit</h4><small>15_app.py</small></div>
+    <div class="arrow">→</div>
+    <div class="layer"><div class="ic">🐍</div><h4>Lógica Python</h4><small>operaciones_bd.py</small></div>
+    <div class="arrow">→</div>
+    <div class="layer"><div class="ic">🗄️</div><h4>MySQL</h4><small>universidad</small></div>
+  </div>
+
+  <!-- OPERATIONS -->
+  <div class="section-title"><h2>Los 4 Algoritmos</h2><p>Cada operación con su flujo completo y sus ramas de error</p></div>
+  <div class="tabs" id="tabs"><div class="tab"><span class="dot" style="color:#4de1ff"></span>➕ Alta de Alumno</div><div class="tab active"><span class="dot" style="color:#c18bff"></span>📚 Buscar por Curso</div><div class="tab"><span class="dot" style="color:#00ff88"></span>🔍 Buscar por DNI</div><div class="tab"><span class="dot" style="color:#ff4466"></span>➖ Baja de Alumno</div></div>
+  <div id="panels"><div class="panel" id="panel-alta"><div class="op-head"><h3 style="color:#4de1ff">➕ Alta de Alumno</h3><p>Registrar un nuevo alumno en la base de datos</p></div><div class="flow"><div class="node t-user" data-op="alta" data-node="alta-user">
+      <div class="row">
+        <div class="nic">👤</div>
+        <div class="ntxt"><small>Usuario</small><h4>Usuario</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-streamlit" data-op="alta" data-node="alta-streamlit">
+      <div class="row">
+        <div class="nic">🛡️</div>
+        <div class="ntxt"><small>Interfaz Streamlit</small><h4>15_app.py — Validación</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ Campos vacíos</span></div><div class="node t-python" data-op="alta" data-node="alta-python">
+      <div class="row">
+        <div class="nic">🐍</div>
+        <div class="ntxt"><small>Lógica Python</small><h4>operaciones_bd.py — alta_alumno()</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-connection" data-op="alta" data-node="alta-connect">
+      <div class="row">
+        <div class="nic">🗄️</div>
+        <div class="ntxt"><small>Conexión BD</small><h4>conectar() → MySQL</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ Fallo conexión</span></div><div class="node t-sql" data-op="alta" data-node="alta-check-dni">
+      <div class="row">
+        <div class="nic">🔍</div>
+        <div class="ntxt"><small>Consulta SQL</small><h4>SELECT — Comprobar DNI</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ DNI duplicado</span></div><div class="node t-sql" data-op="alta" data-node="alta-insert">
+      <div class="row">
+        <div class="nic">➕</div>
+        <div class="ntxt"><small>Consulta SQL</small><h4>INSERT — Insertar alumno</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ Error SQL</span></div><div class="node t-result" data-op="alta" data-node="alta-result-ok">
+      <div class="row">
+        <div class="nic">✅</div>
+        <div class="ntxt"><small>Resultado</small><h4>✅ Alumno añadido</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-error" data-op="alta" data-node="alta-result-err">
+      <div class="row">
+        <div class="nic">❌</div>
+        <div class="ntxt"><small>Error / Rama</small><h4>❌ Error</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div></div></div><div class="panel active" id="panel-buscar-curso"><div class="op-head"><h3 style="color:#c18bff">📚 Buscar por Curso</h3><p>Mostrar todos los alumnos matriculados en un curso</p></div><div class="flow"><div class="node t-user" data-op="buscar-curso" data-node="bc-user">
+      <div class="row">
+        <div class="nic">👤</div>
+        <div class="ntxt"><small>Usuario</small><h4>Usuario</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-python" data-op="buscar-curso" data-node="bc-get-cursos">
+      <div class="row">
+        <div class="nic">📋</div>
+        <div class="ntxt"><small>Lógica Python</small><h4>obtener_cursos()</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ Sin cursos</span></div><div class="node t-streamlit" data-op="buscar-curso" data-node="bc-streamlit">
+      <div class="row">
+        <div class="nic">📊</div>
+        <div class="ntxt"><small>Interfaz Streamlit</small><h4>15_app.py — Mostrar tabla</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-python" data-op="buscar-curso" data-node="bc-python">
+      <div class="row">
+        <div class="nic">🐍</div>
+        <div class="ntxt"><small>Lógica Python</small><h4>buscar_por_curso(curso)</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ Lista vacía</span></div><div class="node t-result" data-op="buscar-curso" data-node="bc-result-ok">
+      <div class="row">
+        <div class="nic">✅</div>
+        <div class="ntxt"><small>Resultado</small><h4>✅ Alumnos encontrados</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-error" data-op="buscar-curso" data-node="bc-result-empty">
+      <div class="row">
+        <div class="nic">ℹ️</div>
+        <div class="ntxt"><small>Error / Rama</small><h4>ℹ️ Sin resultados</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div></div></div><div class="panel" id="panel-buscar-dni"><div class="op-head"><h3 style="color:#00ff88">🔍 Buscar por DNI</h3><p>Buscar un alumno concreto por su DNI</p></div><div class="flow"><div class="node t-user" data-op="buscar-dni" data-node="bd-user">
+      <div class="row">
+        <div class="nic">👤</div>
+        <div class="ntxt"><small>Usuario</small><h4>Usuario</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-streamlit" data-op="buscar-dni" data-node="bd-streamlit">
+      <div class="row">
+        <div class="nic">🛡️</div>
+        <div class="ntxt"><small>Interfaz Streamlit</small><h4>15_app.py — Validación</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ DNI vacío</span></div><div class="node t-python" data-op="buscar-dni" data-node="bd-python">
+      <div class="row">
+        <div class="nic">🐍</div>
+        <div class="ntxt"><small>Lógica Python</small><h4>buscar_por_dni(dni)</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ return None</span></div><div class="node t-connection" data-op="buscar-dni" data-node="bd-connect">
+      <div class="row">
+        <div class="nic">🗄️</div>
+        <div class="ntxt"><small>Conexión BD</small><h4>conectar() → MySQL</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ Fallo / None</span></div><div class="node t-result" data-op="buscar-dni" data-node="bd-result-ok">
+      <div class="row">
+        <div class="nic">✅</div>
+        <div class="ntxt"><small>Resultado</small><h4>✅ Alumno encontrado</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-error" data-op="buscar-dni" data-node="bd-result-err">
+      <div class="row">
+        <div class="nic">⚠️</div>
+        <div class="ntxt"><small>Error / Rama</small><h4>⚠️ No encontrado</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div></div></div><div class="panel" id="panel-baja"><div class="op-head"><h3 style="color:#ff4466">➖ Baja de Alumno</h3><p>Eliminar un alumno de la base de datos</p></div><div class="flow"><div class="node t-user" data-op="baja" data-node="baja-user">
+      <div class="row">
+        <div class="nic">👤</div>
+        <div class="ntxt"><small>Usuario</small><h4>Usuario</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-streamlit" data-op="baja" data-node="baja-streamlit">
+      <div class="row">
+        <div class="nic">🗑️</div>
+        <div class="ntxt"><small>Interfaz Streamlit</small><h4>15_app.py — Acción de borrado</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-python" data-op="baja" data-node="baja-python">
+      <div class="row">
+        <div class="nic">🐍</div>
+        <div class="ntxt"><small>Lógica Python</small><h4>baja_alumno(dni)</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-connection" data-op="baja" data-node="baja-connect">
+      <div class="row">
+        <div class="nic">🗄️</div>
+        <div class="ntxt"><small>Conexión BD</small><h4>conectar() → MySQL</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ Fallo conexión</span></div><div class="node t-sql" data-op="baja" data-node="baja-sql">
+      <div class="row">
+        <div class="nic">🗑️</div>
+        <div class="ntxt"><small>Consulta SQL</small><h4>DELETE — Borrar alumno</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="branch"><span class="err">→ rowcount == 0</span></div><div class="node t-result" data-op="baja" data-node="baja-result-ok">
+      <div class="row">
+        <div class="nic">✅</div>
+        <div class="ntxt"><small>Resultado</small><h4>✅ Alumno eliminado</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div><div class="connector"></div><div class="node t-error" data-op="baja" data-node="baja-result-err">
+      <div class="row">
+        <div class="nic">❌</div>
+        <div class="ntxt"><small>Error / Rama</small><h4>❌ Error al eliminar</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div></div></div></div>
+
+  <!-- DB SCHEMA -->
+  <div class="section-title"><h2>Estructura de la Base de Datos</h2><p>Tabla <code>alumnos</code> en la base de datos <code>universidad</code></p></div>
+  <div class="db-wrap">
+    <div class="db-table">
+      <div class="th">🗄️ tabla: alumnos</div>
+      <div id="dbrows"><div class="db-row"><div class="key">🔑</div><div class="cn">dni<span class="pk-badge">PK</span></div><div class="ct">VARCHAR</div><div class="cd">Clave primaria. Identificador único del alumno.</div></div><div class="db-row"><div class="key">○</div><div class="cn">nombre</div><div class="ct">VARCHAR</div><div class="cd">Nombre completo del alumno.</div></div><div class="db-row"><div class="key">○</div><div class="cn">email</div><div class="ct">VARCHAR</div><div class="cd">Correo electrónico del alumno.</div></div><div class="db-row"><div class="key">○</div><div class="cn">curso</div><div class="ct">VARCHAR</div><div class="cd">Curso en el que está matriculado.</div></div><div class="db-row"><div class="key">○</div><div class="cn">nota</div><div class="ct">FLOAT</div><div class="cd">Nota media del alumno (0.0 a 10.0).</div></div></div>
+    </div>
+  </div>
+
+  <!-- CODE VIEWER -->
+  <div class="section-title"><h2>Código Fuente Completo</h2><p>Los dos archivos originales del proyecto</p></div>
+  <div class="cv-tabs">
+    <div class="cv-tab" data-cv="0">🖥️ 15_app.py</div>
+    <div class="cv-tab active" data-cv="1">🗄️ operaciones_bd.py</div>
+  </div>
+  <div class="cv-body" id="cv0"><pre><code><span class="tok-str">""" Proyecto gestión de alumnos:
+
+-Alta de alumnos: A través de una ventana, se solicitan los datos de un
+nuevo alumno y se guardan en la base de datos. No se admiten dnis duplicados
+si se proporciona un dni que ya existe, el alumno no se añade
+y se avisa mediante un mensaje al usuario
+
+-Busqueda de alumnos por curso. Se selecciona un curso en un combo
+y debajo se muestra una tabla con los datos de todos los alumnos
+de ese curso. En cada fila, aparecerá un botón para borrar a ese alumno
+
+-Busqueda de alumno por dni. Se introduce el dni de un alumno
+y se muestran todos sus datos, si no existe, mensaje de advertencia.  """</span>
+
+
+<span class="tok-kw">import</span> streamlit <span class="tok-kw">as</span> <span class="tok-dec">st</span>
+<span class="tok-kw">import</span> operaciones_bd <span class="tok-kw">as</span> <span class="tok-dec">op2</span>
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># CONFIGURACIÓN STREAMLIT</span>
+<span class="tok-com"># ====</span>
+<span class="tok-dec">st</span>.set_page_config(
+    page_title=<span class="tok-str">"Gestión de Alumnos"</span>,
+    page_icon=<span class="tok-str">"🎓"</span>,
+    layout=<span class="tok-str">"wide"</span>
+)
+
+<span class="tok-dec">st</span>.title(<span class="tok-str">"🎓 Gestión de Alumnos"</span>)
+<span class="tok-dec">st</span>.write(<span class="tok-str">"Aplicación para gestionar los alumnos de la base de datos Universidad."</span>)
+<span class="tok-dec">st</span>.divider()
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># MENÚ</span>
+<span class="tok-com"># ====</span>
+opcion = <span class="tok-dec">st</span>.sidebar.radio(
+    <span class="tok-str">"Selecciona una opción:"</span>,
+    [<span class="tok-str">"Alta de alumno"</span>, <span class="tok-str">"Buscar por curso"</span>, <span class="tok-str">"Buscar por DNI"</span>]
+)
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># ALTA DE ALUMNO</span>
+<span class="tok-com"># ====</span>
+<span class="tok-kw">if</span> opcion == <span class="tok-str">"Alta de alumno"</span>:
+    <span class="tok-dec">st</span>.header(<span class="tok-str">"➕ Alta de alumno"</span>)
+    <span class="tok-kw">with</span> <span class="tok-dec">st</span>.form(<span class="tok-str">"formulario_alta"</span>):
+        dni = <span class="tok-dec">st</span>.text_input(<span class="tok-str">"DNI"</span>)
+        nombre = <span class="tok-dec">st</span>.text_input(<span class="tok-str">"Nombre"</span>)
+        email = <span class="tok-dec">st</span>.text_input(<span class="tok-str">"Email"</span>)
+        curso = <span class="tok-dec">st</span>.text_input(<span class="tok-str">"Curso"</span>)
+        nota = <span class="tok-dec">st</span>.number_input(<span class="tok-str">"Nota"</span>, min_value=<span class="tok-num">0.0</span>, max_value=<span class="tok-num">10.0</span>, step=<span class="tok-num">0.5</span>)
+        guardar = <span class="tok-dec">st</span>.form_submit_button(<span class="tok-str">"Guardar alumno"</span>)
+
+    <span class="tok-kw">if</span> guardar:
+        <span class="tok-kw">if</span> <span class="tok-kw">not</span> dni <span class="tok-kw">or</span> <span class="tok-kw">not</span> nombre <span class="tok-kw">or</span> <span class="tok-kw">not</span> email <span class="tok-kw">or</span> <span class="tok-kw">not</span> curso:
+            <span class="tok-dec">st</span>.warning(<span class="tok-str">"Debes completar todos los campos de texto."</span>)
+        <span class="tok-kw">else</span>:
+            correcto, mensaje = <span class="tok-dec">op2</span>.alta_alumno(
+                dni.strip().upper(),
+                nombre.strip(),
+                email.strip(),
+                curso.strip(),
+                float(nota)
+            )
+            <span class="tok-kw">if</span> correcto:
+                <span class="tok-dec">st</span>.success(mensaje)
+            <span class="tok-kw">else</span>:
+                <span class="tok-dec">st</span>.error(mensaje)
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># BÚSQUEDA POR CURSO</span>
+<span class="tok-com"># ====</span>
+<span class="tok-kw">elif</span> opcion == <span class="tok-str">"Buscar por curso"</span>:
+    <span class="tok-dec">st</span>.header(<span class="tok-str">"📚 Buscar alumnos por curso"</span>)
+    cursos = <span class="tok-dec">op2</span>.obtener_cursos()
+
+    <span class="tok-kw">if</span> <span class="tok-kw">not</span> cursos:
+        <span class="tok-dec">st</span>.warning(<span class="tok-str">"No existen cursos en la base de datos."</span>)
+    <span class="tok-kw">else</span>:
+        curso = <span class="tok-dec">st</span>.selectbox(<span class="tok-str">"Selecciona un curso:"</span>, cursos)
+        alumnos = <span class="tok-dec">op2</span>.buscar_por_curso(curso)
+
+        <span class="tok-kw">if</span> alumnos:
+            <span class="tok-dec">st</span>.success(<span class="tok-str">f"Se han encontrado {len(alumnos)} alumnos."</span>)
+            columnas = <span class="tok-dec">st</span>.columns([<span class="tok-num">2</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">2</span>, <span class="tok-num">1</span>, <span class="tok-num">1</span>])
+            columnas[<span class="tok-num">0</span>].markdown(<span class="tok-str">"**DNI**"</span>)
+            columnas[<span class="tok-num">1</span>].markdown(<span class="tok-str">"**Nombre**"</span>)
+            columnas[<span class="tok-num">2</span>].markdown(<span class="tok-str">"**Email**"</span>)
+            columnas[<span class="tok-num">3</span>].markdown(<span class="tok-str">"**Curso**"</span>)
+            columnas[<span class="tok-num">4</span>].markdown(<span class="tok-str">"**Nota**"</span>)
+            columnas[<span class="tok-num">5</span>].markdown(<span class="tok-str">"**Borrar**"</span>)
+            <span class="tok-dec">st</span>.divider()
+
+            <span class="tok-kw">for</span> alumno <span class="tok-kw">in</span> alumnos:
+                columnas = <span class="tok-dec">st</span>.columns([<span class="tok-num">2</span>, <span class="tok-num">2</span>, <span class="tok-num">3</span>, <span class="tok-num">2</span>, <span class="tok-num">1</span>, <span class="tok-num">1</span>])
+                columnas[<span class="tok-num">0</span>].write(alumno[<span class="tok-str">"dni"</span>])
+                columnas[<span class="tok-num">1</span>].write(alumno[<span class="tok-str">"nombre"</span>])
+                columnas[<span class="tok-num">2</span>].write(alumno[<span class="tok-str">"email"</span>])
+                columnas[<span class="tok-num">3</span>].write(alumno[<span class="tok-str">"curso"</span>])
+                columnas[<span class="tok-num">4</span>].write(alumno[<span class="tok-str">"nota"</span>])
+                <span class="tok-kw">with</span> columnas[<span class="tok-num">5</span>]:
+                    eliminar = <span class="tok-dec">st</span>.button(
+                        <span class="tok-str">"🗑️"</span>,
+                        key=<span class="tok-str">f"borrar_{alumno['dni']}"</span>,
+                        help=<span class="tok-str">"Eliminar alumno"</span>
+                    )
+                    <span class="tok-kw">if</span> eliminar:
+                        borrado = <span class="tok-dec">op2</span>.baja_alumno(alumno[<span class="tok-str">"dni"</span>])
+                        <span class="tok-kw">if</span> borrado:
+                            <span class="tok-dec">st</span>.success(<span class="tok-str">"Alumno eliminado."</span>)
+                            <span class="tok-dec">st</span>.rerun()
+                        <span class="tok-kw">else</span>:
+                            <span class="tok-dec">st</span>.error(<span class="tok-str">"No se ha podido eliminar."</span>)
+        <span class="tok-kw">else</span>:
+            <span class="tok-dec">st</span>.info(<span class="tok-str">"No hay alumnos matriculados en este curso."</span>)
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># BÚSQUEDA POR DNI</span>
+<span class="tok-com"># ====</span>
+<span class="tok-kw">elif</span> opcion == <span class="tok-str">"Buscar por DNI"</span>:
+    <span class="tok-dec">st</span>.header(<span class="tok-str">"🔎 Buscar alumno por DNI"</span>)
+    dni_buscar = <span class="tok-dec">st</span>.text_input(<span class="tok-str">"Introduce el DNI:"</span>)
+    buscar = <span class="tok-dec">st</span>.button(<span class="tok-str">"Buscar alumno"</span>, type=<span class="tok-str">"primary"</span>)
+
+    <span class="tok-kw">if</span> buscar:
+        <span class="tok-kw">if</span> <span class="tok-kw">not</span> dni_buscar:
+            <span class="tok-dec">st</span>.warning(<span class="tok-str">"Introduce un DNI."</span>)
+        <span class="tok-kw">else</span>:
+            alumno = <span class="tok-dec">op2</span>.buscar_por_dni(dni_buscar.strip().upper())
+            <span class="tok-kw">if</span> alumno:
+                <span class="tok-dec">st</span>.success(<span class="tok-str">"Alumno encontrado."</span>)
+                <span class="tok-dec">st</span>.subheader(<span class="tok-str">f"{alumno['nombre']}"</span>)
+                col1, col2 = <span class="tok-dec">st</span>.columns(<span class="tok-num">2</span>)
+                <span class="tok-kw">with</span> col1:
+                    <span class="tok-dec">st</span>.write(<span class="tok-str">f"**DNI:** {alumno['dni']}"</span>)
+                    <span class="tok-dec">st</span>.write(<span class="tok-str">f"**Nombre:** {alumno['nombre']}"</span>)
+                    <span class="tok-dec">st</span>.write(<span class="tok-str">f"**Email:** {alumno['email']}"</span>)
+                <span class="tok-kw">with</span> col2:
+                    <span class="tok-dec">st</span>.write(<span class="tok-str">f"**Curso:** {alumno['curso']}"</span>)
+                    <span class="tok-dec">st</span>.write(<span class="tok-str">f"**Nota:** {alumno['nota']}"</span>)
+            <span class="tok-kw">else</span>:
+                <span class="tok-dec">st</span>.warning(<span class="tok-str">"No existe ningún alumno con ese DNI."</span>)</code></pre></div>
+  <div class="cv-body active" id="cv1"><pre><code><span class="tok-kw">import</span> mysql.connector <span class="tok-kw">as</span> <span class="tok-dec">con</span>
+<span class="tok-kw">from</span> mysql.connector <span class="tok-kw">import</span> <span class="tok-dec">Error</span>
+
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># CONEXIÓN A LA BASE DE DATOS</span>
+<span class="tok-com"># ====</span>
+
+<span class="tok-kw">def</span> conectar():
+    <span class="tok-kw">try</span>:
+        <span class="tok-kw">return</span> <span class="tok-dec">con</span>.connect(
+            host=<span class="tok-str">"localhost"</span>,
+            user=<span class="tok-str">"root"</span>,
+            password=<span class="tok-str">"root"</span>,
+            port=<span class="tok-num">3306</span>,
+            database=<span class="tok-str">"universidad"</span>
+        )
+    <span class="tok-kw">except</span> <span class="tok-dec">Error</span> <span class="tok-kw">as</span> error:
+        print(<span class="tok-str">f"Error de conexión: {error}"</span>)
+        <span class="tok-kw">return</span> <span class="tok-kw">None</span>
+
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># ALTA DE ALUMNO</span>
+<span class="tok-com"># ====</span>
+
+<span class="tok-kw">def</span> alta_alumno(dni, nombre, email, curso, nota):
+    <span class="tok-dec">conexion</span> = conectar()
+    <span class="tok-kw">if</span> <span class="tok-dec">conexion</span> is <span class="tok-kw">None</span>:
+        <span class="tok-kw">return</span> <span class="tok-kw">False</span>, <span class="tok-str">"No se ha podido conectar con la base de datos."</span>
+    <span class="tok-dec">cursor</span> = <span class="tok-dec">conexion</span>.<span class="tok-dec">cursor</span>()
+    <span class="tok-kw">try</span>:
+        sql = <span class="tok-str">"SELECT dni FROM alumnos WHERE dni = %s"</span>
+        <span class="tok-dec">cursor</span>.execute(sql, (dni,))
+        <span class="tok-kw">if</span> <span class="tok-dec">cursor</span>.fetchone():
+            <span class="tok-kw">return</span> <span class="tok-kw">False</span>, <span class="tok-str">"Ya existe un alumno con ese DNI."</span>
+        sql = <span class="tok-str">"INSERT INTO alumnos (dni, nombre, email, curso, nota) VALUES (%s, %s, %s, %s, %s)"</span>
+        datos = (dni, nombre, email, curso, nota)
+        <span class="tok-dec">cursor</span>.execute(sql, datos)
+        <span class="tok-dec">conexion</span>.commit()
+        <span class="tok-kw">return</span> <span class="tok-kw">True</span>, <span class="tok-str">"Alumno añadido correctamente."</span>
+    <span class="tok-kw">except</span> <span class="tok-dec">Error</span> <span class="tok-kw">as</span> error:
+        <span class="tok-kw">return</span> <span class="tok-kw">False</span>, <span class="tok-str">f"Error: {error}"</span>
+    <span class="tok-kw">finally</span>:
+        <span class="tok-dec">cursor</span>.close()
+        <span class="tok-dec">conexion</span>.close()
+
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># BUSCAR ALUMNOS POR CURSO</span>
+<span class="tok-com"># ====</span>
+
+<span class="tok-kw">def</span> buscar_por_curso(curso):
+    <span class="tok-dec">conexion</span> = conectar()
+    <span class="tok-kw">if</span> <span class="tok-dec">conexion</span> is <span class="tok-kw">None</span>:
+        <span class="tok-kw">return</span> []
+    <span class="tok-dec">cursor</span> = <span class="tok-dec">conexion</span>.<span class="tok-dec">cursor</span>(dictionary=<span class="tok-kw">True</span>)
+    <span class="tok-kw">try</span>:
+        sql = <span class="tok-str">"SELECT dni, nombre, email, curso, nota FROM alumnos WHERE curso = %s ORDER BY nombre"</span>
+        <span class="tok-dec">cursor</span>.execute(sql, (curso,))
+        <span class="tok-kw">return</span> <span class="tok-dec">cursor</span>.fetchall()
+    <span class="tok-kw">except</span> <span class="tok-dec">Error</span> <span class="tok-kw">as</span> error:
+        print(<span class="tok-str">f"Error: {error}"</span>)
+        <span class="tok-kw">return</span> []
+    <span class="tok-kw">finally</span>:
+        <span class="tok-dec">cursor</span>.close()
+        <span class="tok-dec">conexion</span>.close()
+
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># BUSCAR ALUMNO POR DNI</span>
+<span class="tok-com"># ====</span>
+
+<span class="tok-kw">def</span> buscar_por_dni(dni):
+    <span class="tok-dec">conexion</span> = conectar()
+    <span class="tok-kw">if</span> <span class="tok-dec">conexion</span> is <span class="tok-kw">None</span>:
+        <span class="tok-kw">return</span> <span class="tok-kw">None</span>
+    <span class="tok-dec">cursor</span> = <span class="tok-dec">conexion</span>.<span class="tok-dec">cursor</span>(dictionary=<span class="tok-kw">True</span>)
+    <span class="tok-kw">try</span>:
+        sql = <span class="tok-str">"SELECT dni, nombre, email, curso, nota FROM alumnos WHERE dni = %s"</span>
+        <span class="tok-dec">cursor</span>.execute(sql, (dni,))
+        <span class="tok-kw">return</span> <span class="tok-dec">cursor</span>.fetchone()
+    <span class="tok-kw">except</span> <span class="tok-dec">Error</span> <span class="tok-kw">as</span> error:
+        print(<span class="tok-str">f"Error: {error}"</span>)
+        <span class="tok-kw">return</span> <span class="tok-kw">None</span>
+    <span class="tok-kw">finally</span>:
+        <span class="tok-dec">cursor</span>.close()
+        <span class="tok-dec">conexion</span>.close()
+
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># BAJA DE ALUMNO</span>
+<span class="tok-com"># ====</span>
+
+<span class="tok-kw">def</span> baja_alumno(dni):
+    <span class="tok-dec">conexion</span> = conectar()
+    <span class="tok-kw">if</span> <span class="tok-dec">conexion</span> is <span class="tok-kw">None</span>:
+        <span class="tok-kw">return</span> <span class="tok-kw">False</span>
+    <span class="tok-dec">cursor</span> = <span class="tok-dec">conexion</span>.<span class="tok-dec">cursor</span>()
+    <span class="tok-kw">try</span>:
+        sql = <span class="tok-str">"DELETE FROM alumnos WHERE dni = %s"</span>
+        <span class="tok-dec">cursor</span>.execute(sql, (dni,))
+        <span class="tok-dec">conexion</span>.commit()
+        <span class="tok-kw">return</span> <span class="tok-dec">cursor</span>.rowcount &gt; <span class="tok-num">0</span>
+    <span class="tok-kw">except</span> <span class="tok-dec">Error</span> <span class="tok-kw">as</span> error:
+        print(<span class="tok-str">f"Error: {error}"</span>)
+        <span class="tok-kw">return</span> <span class="tok-kw">False</span>
+    <span class="tok-kw">finally</span>:
+        <span class="tok-dec">cursor</span>.close()
+        <span class="tok-dec">conexion</span>.close()
+
+
+<span class="tok-com"># ====</span>
+<span class="tok-com"># OBTENER TODOS LOS CURSOS</span>
+<span class="tok-com"># ====</span>
+
+<span class="tok-kw">def</span> obtener_cursos():
+    <span class="tok-dec">conexion</span> = conectar()
+    <span class="tok-kw">if</span> <span class="tok-dec">conexion</span> is <span class="tok-kw">None</span>:
+        <span class="tok-kw">return</span> []
+    <span class="tok-dec">cursor</span> = <span class="tok-dec">conexion</span>.<span class="tok-dec">cursor</span>()
+    <span class="tok-kw">try</span>:
+        sql = <span class="tok-str">"SELECT DISTINCT curso FROM alumnos ORDER BY curso"</span>
+        <span class="tok-dec">cursor</span>.execute(sql)
+        resultados = <span class="tok-dec">cursor</span>.fetchall()
+        <span class="tok-kw">return</span> [fila[<span class="tok-num">0</span>] <span class="tok-kw">for</span> fila <span class="tok-kw">in</span> resultados]
+    <span class="tok-kw">except</span> <span class="tok-dec">Error</span> <span class="tok-kw">as</span> error:
+        print(<span class="tok-str">f"Error: {error}"</span>)
+        <span class="tok-kw">return</span> []
+    <span class="tok-kw">finally</span>:
+        <span class="tok-dec">cursor</span>.close()
+        <span class="tok-dec">conexion</span>.close()</code></pre></div>
+
+  <footer>Algoritmo visual generado para comprender el funcionamiento combinado de <b>15_app.py</b> + <b>operaciones_bd.py</b> · Archivo único ejecutable en local.</footer>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"><div class="mhead"><div class="nic">📋</div><div><small style="color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:.75rem">Lógica Python</small><h3>obtener_cursos()</h3></div><span class="close" id="closeM">✕</span></div><div class="desc">Obtiene la lista de cursos distintos de la BD para poblar el selectbox.</div><div class="lbl">🐍 Código Python</div><pre><code><span class="tok-kw">def</span> obtener_cursos():
+    <span class="tok-dec">conexion</span> = conectar()
+    <span class="tok-kw">if</span> <span class="tok-dec">conexion</span> is <span class="tok-kw">None</span>:
+        <span class="tok-kw">return</span> []
+    <span class="tok-dec">cursor</span> = <span class="tok-dec">conexion</span>.<span class="tok-dec">cursor</span>()
+    <span class="tok-kw">try</span>:
+        sql = <span class="tok-str">"SELECT DISTINCT curso FROM alumnos ORDER BY curso"</span>
+        <span class="tok-dec">cursor</span>.execute(sql)
+        resultados = <span class="tok-dec">cursor</span>.fetchall()
+        <span class="tok-kw">return</span> [fila[<span class="tok-num">0</span>] <span class="tok-kw">for</span> fila <span class="tok-kw">in</span> resultados]
+    <span class="tok-kw">except</span> <span class="tok-dec">Error</span> <span class="tok-kw">as</span> error:
+        print(<span class="tok-str">f"Error: {error}"</span>)
+        <span class="tok-kw">return</span> []
+    <span class="tok-kw">finally</span>:
+        <span class="tok-dec">cursor</span>.close()
+        <span class="tok-dec">conexion</span>.close()</code></pre><div class="lbl sql">🗄️ Consulta SQL</div><pre><code><span class="tok-kw">SELECT</span> <span class="tok-kw">DISTINCT</span> curso
+<span class="tok-kw">FROM</span> alumnos
+<span class="tok-kw">ORDER</span> <span class="tok-kw">BY</span> curso</code></pre></div>
+</div>
+<script>
+const OPERATIONS = [
+  {
+    id: 'alta',
+    title: 'Alta de Alumno',
+    subtitle: 'Registrar un nuevo alumno en la base de datos',
+    icon: 'UserPlus',
+    color: '#4de1ff',
+    nodes: [
+      {
+        id: 'alta-user',
+        label: 'Usuario',
+        type: 'user',
+        icon: 'User',
+        description: 'El usuario rellena el formulario con los datos del alumno: DNI, nombre, email, curso y nota.',
+        code: `with st.form("formulario_alta"):\n    dni = st.text_input("DNI")\n    nombre = st.text_input("Nombre")\n    email = st.text_input("Email")\n    curso = st.text_input("Curso")\n    nota = st.number_input("Nota", min_value=0.0, max_value=10.0, step=0.5)\n    guardar = st.form_submit_button("Guardar alumno")`,
+        errorCases: ['El usuario deja campos vacíos → se muestra advertencia'],
+      },
+      {
+        id: 'alta-streamlit',
+        label: '15_app.py — Validación',
+        type: 'streamlit',
+        icon: 'Shield',
+        description: 'Streamlit valida que todos los campos de texto estén rellenos. Si alguno está vacío, muestra un warning y NO continúa.',
+        code: `if guardar:\n    if not dni or not nombre or not email or not curso:\n        st.warning("Debes completar todos los campos de texto.")\n    else:\n        correcto, mensaje = op2.alta_alumno(\n            dni.strip().upper(),\n            nombre.strip(),\n            email.strip(),\n            curso.strip(),\n            float(nota)\n        )`,
+        errorCases: ['Campos vacíos → st.warning("Debes completar todos los campos de texto.")'],
+        successMessage: 'Datos validados → se llama a alta_alumno()',
+      },
+      {
+        id: 'alta-python',
+        label: 'operaciones_bd.py — alta_alumno()',
+        type: 'python',
+        icon: 'Code',
+        description: 'Función que gestiona el alta. Primero conecta con la BD, luego comprueba si el DNI ya existe, y si no, inserta el nuevo registro.',
+        code: `def alta_alumno(dni, nombre, email, curso, nota):\n    conexion = conectar()\n    if conexion is None:\n        return False, "No se ha podido conectar con la base de datos."\n    cursor = conexion.cursor()\n    try:\n        # Comprobar si existe el DNI\n        sql = "SELECT dni FROM alumnos WHERE dni = %s"\n        cursor.execute(sql, (dni,))\n        if cursor.fetchone():\n            return False, "Ya existe un alumno con ese DNI."\n        # Insertar alumno\n        sql = "INSERT INTO alumnos (dni, nombre, email, curso, nota) VALUES (%s, %s, %s, %s, %s)"\n        cursor.execute(sql, (dni, nombre, email, curso, nota))\n        conexion.commit()\n        return True, "Alumno añadido correctamente."\n    except Error as error:\n        return False, f"Error: {error}"\n    finally:\n        cursor.close()\n        conexion.close()`,
+      },
+      {
+        id: 'alta-connect',
+        label: 'conectar() → MySQL',
+        type: 'connection',
+        icon: 'Database',
+        description: 'Abre una conexión TCP a MySQL en localhost:3306, base de datos "universidad".',
+        code: `def conectar():\n    try:\n        return con.connect(\n            host="localhost",\n            user="root",\n            password="root",\n            port=3306,\n            database="universidad"\n        )\n    except Error as error:\n        print(f"Error de conexión: {error}")\n        return None`,
+        errorCases: ['MySQL no arrancado → return None', 'Credenciales incorrectas → Error de conexión', 'BD "universidad" no existe → Error de conexión'],
+        errorMessage: 'return None → "No se ha podido conectar con la base de datos."',
+      },
+      {
+        id: 'alta-check-dni',
+        label: 'SELECT — Comprobar DNI',
+        type: 'sql',
+        icon: 'Search',
+        description: 'Antes de insertar, se comprueba si ya existe un alumno con el mismo DNI para evitar duplicados.',
+        sql: `SELECT dni\nFROM alumnos\nWHERE dni = %s`,
+        errorCases: ['fetchone() devuelve un resultado → DNI duplicado → return False, "Ya existe un alumno con ese DNI."'],
+        successMessage: 'fetchone() devuelve None → no existe, se puede insertar',
+      },
+      {
+        id: 'alta-insert',
+        label: 'INSERT — Insertar alumno',
+        type: 'sql',
+        icon: 'Plus',
+        description: 'Se ejecuta la sentencia INSERT con los 5 valores parametrizados y se hace commit.',
+        sql: `INSERT INTO alumnos\n(dni, nombre, email, curso, nota)\nVALUES (%s, %s, %s, %s, %s)`,
+        successMessage: 'conexion.commit() → return True, "Alumno añadido correctamente."',
+        errorCases: ['Error SQL inesperado → except Error → return False, f"Error: {error}"'],
+      },
+      {
+        id: 'alta-result-ok',
+        label: '✅ Alumno añadido',
+        type: 'result',
+        icon: 'CheckCircle',
+        description: 'El alumno se insertó correctamente. Streamlit muestra st.success(mensaje).',
+        code: `if correcto:\n    st.success(mensaje)`,
+        successMessage: 'st.success("Alumno añadido correctamente.")',
+      },
+      {
+        id: 'alta-result-err',
+        label: '❌ Error',
+        type: 'error',
+        icon: 'XCircle',
+        description: 'El alta falló por: campos vacíos, DNI duplicado, error de conexión o error SQL.',
+        code: `else:\n    st.error(mensaje)`,
+        errorMessage: 'st.error(mensaje) — muestra el error específico al usuario',
+        errorCases: ['"No se ha podido conectar con la base de datos."', '"Ya existe un alumno con ese DNI."', '"Error: {detalle MySQL}"'],
+      },
+    ],
+    edges: [
+      { from: 'alta-user', to: 'alta-streamlit', label: 'Clic en Guardar' },
+      { from: 'alta-streamlit', to: 'alta-python', label: 'Datos válidos' },
+      { from: 'alta-streamlit', to: 'alta-result-err', label: 'Campos vacíos', isError: true },
+      { from: 'alta-python', to: 'alta-connect', label: 'conectar()' },
+      { from: 'alta-connect', to: 'alta-check-dni', label: 'Conexión OK' },
+      { from: 'alta-connect', to: 'alta-result-err', label: 'Fallo conexión', isError: true },
+      { from: 'alta-check-dni', to: 'alta-insert', label: 'DNI libre' },
+      { from: 'alta-check-dni', to: 'alta-result-err', label: 'DNI duplicado', isError: true },
+      { from: 'alta-insert', to: 'alta-result-ok', label: 'commit() OK' },
+      { from: 'alta-insert', to: 'alta-result-err', label: 'Error SQL', isError: true },
+    ],
+  },
+  {
+    id: 'buscar-curso',
+    title: 'Buscar por Curso',
+    subtitle: 'Mostrar todos los alumnos matriculados en un curso',
+    icon: 'BookOpen',
+    color: '#c18bff',
+    nodes: [
+      {
+        id: 'bc-user',
+        label: 'Usuario',
+        type: 'user',
+        icon: 'User',
+        description: 'El usuario selecciona un curso del desplegable (selectbox) poblado con los cursos disponibles.',
+        code: `cursos = op2.obtener_cursos()\nif not cursos:\n    st.warning("No existen cursos en la base de datos.")\nelse:\n    curso = st.selectbox("Selecciona un curso:", cursos)`,
+      },
+      {
+        id: 'bc-get-cursos',
+        label: 'obtener_cursos()',
+        type: 'python',
+        icon: 'List',
+        description: 'Obtiene la lista de cursos distintos de la BD para poblar el selectbox.',
+        code: `def obtener_cursos():\n    conexion = conectar()\n    if conexion is None:\n        return []\n    cursor = conexion.cursor()\n    try:\n        sql = "SELECT DISTINCT curso FROM alumnos ORDER BY curso"\n        cursor.execute(sql)\n        resultados = cursor.fetchall()\n        return [fila[0] for fila in resultados]\n    except Error as error:\n        print(f"Error: {error}")\n        return []\n    finally:\n        cursor.close()\n        conexion.close()`,
+        sql: `SELECT DISTINCT curso\nFROM alumnos\nORDER BY curso`,
+      },
+      {
+        id: 'bc-streamlit',
+        label: '15_app.py — Mostrar tabla',
+        type: 'streamlit',
+        icon: 'Table',
+        description: 'Al seleccionar un curso, llama a buscar_por_curso() y muestra los resultados en una tabla con columnas y un botón 🗑️ para borrar.',
+        code: `alumnos = op2.buscar_por_curso(curso)\nif alumnos:\n    st.success(f"Se han encontrado {len(alumnos)} alumnos.")\n    columnas = st.columns([2, 2, 3, 2, 1, 1])\n    columnas[0].markdown("**DNI**")\n    columnas[1].markdown("**Nombre**")\n    # ... cabeceras\n    for alumno in alumnos:\n        columnas = st.columns([2, 2, 3, 2, 1, 1])\n        columnas[0].write(alumno["dni"])\n        # ... datos + botón borrar`,
+      },
+      {
+        id: 'bc-python',
+        label: 'buscar_por_curso(curso)',
+        type: 'python',
+        icon: 'Code',
+        description: 'Conecta a MySQL, ejecuta SELECT con cursor dictionary=True para obtener listas de diccionarios.',
+        code: `def buscar_por_curso(curso):\n    conexion = conectar()\n    if conexion is None:\n        return []\n    cursor = conexion.cursor(dictionary=True)\n    try:\n        sql = "SELECT dni, nombre, email, curso, nota FROM alumnos WHERE curso = %s ORDER BY nombre"\n        cursor.execute(sql, (curso,))\n        return cursor.fetchall()\n    except Error as error:\n        print(f"Error: {error}")\n        return []\n    finally:\n        cursor.close()\n        conexion.close()`,
+        sql: `SELECT dni, nombre, email, curso, nota\nFROM alumnos\nWHERE curso = %s\nORDER BY nombre`,
+      },
+      {
+        id: 'bc-result-ok',
+        label: '✅ Alumnos encontrados',
+        type: 'result',
+        icon: 'CheckCircle',
+        description: 'Se muestran los alumnos en formato tabla con botón de borrado individual.',
+        successMessage: 'st.success(f"Se han encontrado {len(alumnos)} alumnos.")',
+      },
+      {
+        id: 'bc-result-empty',
+        label: 'ℹ️ Sin resultados',
+        type: 'error',
+        icon: 'Info',
+        description: 'No hay alumnos en ese curso o la lista de cursos está vacía.',
+        errorMessage: 'st.info("No hay alumnos matriculados en este curso.")',
+        errorCases: ['Lista vacía de cursos → st.warning("No existen cursos en la base de datos.")', 'Curso sin alumnos → st.info("No hay alumnos matriculados en este curso.")'],
+      },
+    ],
+    edges: [
+      { from: 'bc-user', to: 'bc-get-cursos', label: 'Cargar cursos' },
+      { from: 'bc-get-cursos', to: 'bc-streamlit', label: 'Seleccionar curso' },
+      { from: 'bc-get-cursos', to: 'bc-result-empty', label: 'Sin cursos', isError: true },
+      { from: 'bc-streamlit', to: 'bc-python', label: 'buscar_por_curso()' },
+      { from: 'bc-python', to: 'bc-result-ok', label: 'Resultados > 0' },
+      { from: 'bc-python', to: 'bc-result-empty', label: 'Lista vacía', isError: true },
+    ],
+  },
+  {
+    id: 'buscar-dni',
+    title: 'Buscar por DNI',
+    subtitle: 'Buscar un alumno concreto por su DNI',
+    icon: 'Search',
+    color: '#00ff88',
+    nodes: [
+      {
+        id: 'bd-user',
+        label: 'Usuario',
+        type: 'user',
+        icon: 'User',
+        description: 'El usuario escribe un DNI en el campo de texto y pulsa el botón "Buscar alumno".',
+        code: `dni_buscar = st.text_input("Introduce el DNI:")\nbuscar = st.button("Buscar alumno", type="primary")`,
+      },
+      {
+        id: 'bd-streamlit',
+        label: '15_app.py — Validación',
+        type: 'streamlit',
+        icon: 'Shield',
+        description: 'Comprueba que el campo DNI no esté vacío. Si lo está, muestra warning.',
+        code: `if buscar:\n    if not dni_buscar:\n        st.warning("Introduce un DNI.")\n    else:\n        alumno = op2.buscar_por_dni(dni_buscar.strip().upper())`,
+        errorCases: ['DNI vacío → st.warning("Introduce un DNI.")'],
+      },
+      {
+        id: 'bd-python',
+        label: 'buscar_por_dni(dni)',
+        type: 'python',
+        icon: 'Code',
+        description: 'Conecta a MySQL, ejecuta SELECT con cursor dictionary=True, devuelve el primer resultado o None.',
+        code: `def buscar_por_dni(dni):\n    conexion = conectar()\n    if conexion is None:\n        return None\n    cursor = conexion.cursor(dictionary=True)\n    try:\n        sql = "SELECT dni, nombre, email, curso, nota FROM alumnos WHERE dni = %s"\n        cursor.execute(sql, (dni,))\n        return cursor.fetchone()\n    except Error as error:\n        print(f"Error: {error}")\n        return None\n    finally:\n        cursor.close()\n        conexion.close()`,
+        sql: `SELECT dni, nombre, email, curso, nota\nFROM alumnos\nWHERE dni = %s`,
+      },
+      {
+        id: 'bd-connect',
+        label: 'conectar() → MySQL',
+        type: 'connection',
+        icon: 'Database',
+        description: 'Abre conexión a la base de datos universidad. Si falla, devuelve None.',
+        errorCases: ['MySQL no disponible → return None'],
+      },
+      {
+        id: 'bd-result-ok',
+        label: '✅ Alumno encontrado',
+        type: 'result',
+        icon: 'CheckCircle',
+        description: 'Se muestran todos los datos del alumno: DNI, nombre, email, curso y nota.',
+        code: `if alumno:\n    st.success("Alumno encontrado.")\n    st.subheader(f"{alumno['nombre']}")\n    col1, col2 = st.columns(2)\n    with col1:\n        st.write(f"**DNI:** {alumno['dni']}")\n        st.write(f"**Nombre:** {alumno['nombre']}")\n        st.write(f"**Email:** {alumno['email']}")\n    with col2:\n        st.write(f"**Curso:** {alumno['curso']}")\n        st.write(f"**Nota:** {alumno['nota']}")`,
+        successMessage: 'st.success("Alumno encontrado.")',
+      },
+      {
+        id: 'bd-result-err',
+        label: '⚠️ No encontrado',
+        type: 'error',
+        icon: 'AlertTriangle',
+        description: 'No existe ningún alumno con ese DNI en la base de datos.',
+        errorMessage: 'st.warning("No existe ningún alumno con ese DNI.")',
+      },
+    ],
+    edges: [
+      { from: 'bd-user', to: 'bd-streamlit', label: 'Clic en Buscar' },
+      { from: 'bd-streamlit', to: 'bd-python', label: 'DNI válido' },
+      { from: 'bd-streamlit', to: 'bd-result-err', label: 'DNI vacío', isError: true },
+      { from: 'bd-python', to: 'bd-connect', label: 'conectar()' },
+      { from: 'bd-connect', to: 'bd-result-ok', label: 'fetchone() OK' },
+      { from: 'bd-connect', to: 'bd-result-err', label: 'Fallo / None', isError: true },
+      { from: 'bd-python', to: 'bd-result-ok', label: 'alumno encontrado' },
+      { from: 'bd-python', to: 'bd-result-err', label: 'return None', isError: true },
+    ],
+  },
+  {
+    id: 'baja',
+    title: 'Baja de Alumno',
+    subtitle: 'Eliminar un alumno de la base de datos',
+    icon: 'UserMinus',
+    color: '#ff4466',
+    nodes: [
+      {
+        id: 'baja-user',
+        label: 'Usuario',
+        type: 'user',
+        icon: 'User',
+        description: 'El usuario hace clic en el botón 🗑️ de la fila del alumno que desea eliminar (dentro de "Buscar por curso").',
+        code: `with columnas[5]:\n    eliminar = st.button(\n        "🗑️",\n        key=f"borrar_{alumno['dni']}",\n        help="Eliminar alumno"\n    )`,
+      },
+      {
+        id: 'baja-streamlit',
+        label: '15_app.py — Acción de borrado',
+        type: 'streamlit',
+        icon: 'Trash2',
+        description: 'Al pulsar el botón, se llama a baja_alumno(dni). Si se borra, recarga la página con st.rerun().',
+        code: `if eliminar:\n    borrado = op2.baja_alumno(alumno["dni"])\n    if borrado:\n        st.success("Alumno eliminado.")\n        st.rerun()\n    else:\n        st.error("No se ha podido eliminar.")`,
+      },
+      {
+        id: 'baja-python',
+        label: 'baja_alumno(dni)',
+        type: 'python',
+        icon: 'Code',
+        description: 'Ejecuta DELETE y comprueba rowcount para saber si realmente se borró una fila.',
+        code: `def baja_alumno(dni):\n    conexion = conectar()\n    if conexion is None:\n        return False\n    cursor = conexion.cursor()\n    try:\n        sql = "DELETE FROM alumnos WHERE dni = %s"\n        cursor.execute(sql, (dni,))\n        conexion.commit()\n        return cursor.rowcount > 0\n    except Error as error:\n        print(f"Error: {error}")\n        return False\n    finally:\n        cursor.close()\n        conexion.close()`,
+        sql: `DELETE FROM alumnos\nWHERE dni = %s`,
+      },
+      {
+        id: 'baja-connect',
+        label: 'conectar() → MySQL',
+        type: 'connection',
+        icon: 'Database',
+        description: 'Abre conexión. Si falla, devuelve False directamente.',
+        errorCases: ['Conexión fallida → return False → st.error("No se ha podido eliminar.")'],
+      },
+      {
+        id: 'baja-sql',
+        label: 'DELETE — Borrar alumno',
+        type: 'sql',
+        icon: 'Trash',
+        description: 'Ejecuta DELETE con el DNI y hace commit. Luego comprueba cursor.rowcount > 0.',
+        sql: `DELETE FROM alumnos\nWHERE dni = %s\n\n-- Después:\nconexion.commit()\nreturn cursor.rowcount > 0`,
+        errorCases: ['rowcount == 0 → El alumno ya no existía → return False', 'Error SQL → except Error → return False'],
+      },
+      {
+        id: 'baja-result-ok',
+        label: '✅ Alumno eliminado',
+        type: 'result',
+        icon: 'CheckCircle',
+        description: 'El alumno fue borrado. Streamlit muestra éxito y recarga la página.',
+        successMessage: 'st.success("Alumno eliminado.") + st.rerun()',
+      },
+      {
+        id: 'baja-result-err',
+        label: '❌ Error al eliminar',
+        type: 'error',
+        icon: 'XCircle',
+        description: 'No se pudo eliminar: fallo de conexión, error SQL o rowcount == 0.',
+        errorMessage: 'st.error("No se ha podido eliminar.")',
+        errorCases: ['Conexión fallida', 'Error SQL inesperado', 'rowcount == 0 (alumno ya borrado por otro proceso)'],
+      },
+    ],
+    edges: [
+      { from: 'baja-user', to: 'baja-streamlit', label: 'Clic en 🗑️' },
+      { from: 'baja-streamlit', to: 'baja-python', label: 'baja_alumno(dni)' },
+      { from: 'baja-python', to: 'baja-connect', label: 'conectar()' },
+      { from: 'baja-connect', to: 'baja-sql', label: 'Conexión OK' },
+      { from: 'baja-connect', to: 'baja-result-err', label: 'Fallo conexión', isError: true },
+      { from: 'baja-sql', to: 'baja-result-ok', label: 'rowcount > 0' },
+      { from: 'baja-sql', to: 'baja-result-err', label: 'rowcount == 0', isError: true },
+    ],
+  },
+];
+
+const SOURCE_15_APP = `""" Proyecto gestión de alumnos:
+
+-Alta de alumnos: A través de una ventana, se solicitan los datos de un
+nuevo alumno y se guardan en la base de datos. No se admiten dnis duplicados
+si se proporciona un dni que ya existe, el alumno no se añade
+y se avisa mediante un mensaje al usuario
+
+-Busqueda de alumnos por curso. Se selecciona un curso en un combo
+y debajo se muestra una tabla con los datos de todos los alumnos
+de ese curso. En cada fila, aparecerá un botón para borrar a ese alumno
+
+-Busqueda de alumno por dni. Se introduce el dni de un alumno
+y se muestran todos sus datos, si no existe, mensaje de advertencia.  """
+
+
+import streamlit as st
+import operaciones_bd as op2
+
+# ====
+# CONFIGURACIÓN STREAMLIT
+# ====
+st.set_page_config(
+    page_title="Gestión de Alumnos",
+    page_icon="🎓",
+    layout="wide"
+)
+
+st.title("🎓 Gestión de Alumnos")
+st.write("Aplicación para gestionar los alumnos de la base de datos Universidad.")
+st.divider()
+
+# ====
+# MENÚ
+# ====
+opcion = st.sidebar.radio(
+    "Selecciona una opción:",
+    ["Alta de alumno", "Buscar por curso", "Buscar por DNI"]
+)
+
+# ====
+# ALTA DE ALUMNO
+# ====
+if opcion == "Alta de alumno":
+    st.header("➕ Alta de alumno")
+    with st.form("formulario_alta"):
+        dni = st.text_input("DNI")
+        nombre = st.text_input("Nombre")
+        email = st.text_input("Email")
+        curso = st.text_input("Curso")
+        nota = st.number_input("Nota", min_value=0.0, max_value=10.0, step=0.5)
+        guardar = st.form_submit_button("Guardar alumno")
+
+    if guardar:
+        if not dni or not nombre or not email or not curso:
+            st.warning("Debes completar todos los campos de texto.")
+        else:
+            correcto, mensaje = op2.alta_alumno(
+                dni.strip().upper(),
+                nombre.strip(),
+                email.strip(),
+                curso.strip(),
+                float(nota)
+            )
+            if correcto:
+                st.success(mensaje)
+            else:
+                st.error(mensaje)
+
+# ====
+# BÚSQUEDA POR CURSO
+# ====
+elif opcion == "Buscar por curso":
+    st.header("📚 Buscar alumnos por curso")
+    cursos = op2.obtener_cursos()
+
+    if not cursos:
+        st.warning("No existen cursos en la base de datos.")
+    else:
+        curso = st.selectbox("Selecciona un curso:", cursos)
+        alumnos = op2.buscar_por_curso(curso)
+
+        if alumnos:
+            st.success(f"Se han encontrado {len(alumnos)} alumnos.")
+            columnas = st.columns([2, 2, 3, 2, 1, 1])
+            columnas[0].markdown("**DNI**")
+            columnas[1].markdown("**Nombre**")
+            columnas[2].markdown("**Email**")
+            columnas[3].markdown("**Curso**")
+            columnas[4].markdown("**Nota**")
+            columnas[5].markdown("**Borrar**")
+            st.divider()
+
+            for alumno in alumnos:
+                columnas = st.columns([2, 2, 3, 2, 1, 1])
+                columnas[0].write(alumno["dni"])
+                columnas[1].write(alumno["nombre"])
+                columnas[2].write(alumno["email"])
+                columnas[3].write(alumno["curso"])
+                columnas[4].write(alumno["nota"])
+                with columnas[5]:
+                    eliminar = st.button(
+                        "🗑️",
+                        key=f"borrar_{alumno['dni']}",
+                        help="Eliminar alumno"
+                    )
+                    if eliminar:
+                        borrado = op2.baja_alumno(alumno["dni"])
+                        if borrado:
+                            st.success("Alumno eliminado.")
+                            st.rerun()
+                        else:
+                            st.error("No se ha podido eliminar.")
+        else:
+            st.info("No hay alumnos matriculados en este curso.")
+
+# ====
+# BÚSQUEDA POR DNI
+# ====
+elif opcion == "Buscar por DNI":
+    st.header("🔎 Buscar alumno por DNI")
+    dni_buscar = st.text_input("Introduce el DNI:")
+    buscar = st.button("Buscar alumno", type="primary")
+
+    if buscar:
+        if not dni_buscar:
+            st.warning("Introduce un DNI.")
+        else:
+            alumno = op2.buscar_por_dni(dni_buscar.strip().upper())
+            if alumno:
+                st.success("Alumno encontrado.")
+                st.subheader(f"{alumno['nombre']}")
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.write(f"**DNI:** {alumno['dni']}")
+                    st.write(f"**Nombre:** {alumno['nombre']}")
+                    st.write(f"**Email:** {alumno['email']}")
+                with col2:
+                    st.write(f"**Curso:** {alumno['curso']}")
+                    st.write(f"**Nota:** {alumno['nota']}")
+            else:
+                st.warning("No existe ningún alumno con ese DNI.")`;
+
+const SOURCE_OPERACIONES = `import mysql.connector as con
+from mysql.connector import Error
+
+
+# ====
+# CONEXIÓN A LA BASE DE DATOS
+# ====
+
+def conectar():
+    try:
+        return con.connect(
+            host="localhost",
+            user="root",
+            password="root",
+            port=3306,
+            database="universidad"
+        )
+    except Error as error:
+        print(f"Error de conexión: {error}")
+        return None
+
+
+# ====
+# ALTA DE ALUMNO
+# ====
+
+def alta_alumno(dni, nombre, email, curso, nota):
+    conexion = conectar()
+    if conexion is None:
+        return False, "No se ha podido conectar con la base de datos."
+    cursor = conexion.cursor()
+    try:
+        sql = "SELECT dni FROM alumnos WHERE dni = %s"
+        cursor.execute(sql, (dni,))
+        if cursor.fetchone():
+            return False, "Ya existe un alumno con ese DNI."
+        sql = "INSERT INTO alumnos (dni, nombre, email, curso, nota) VALUES (%s, %s, %s, %s, %s)"
+        datos = (dni, nombre, email, curso, nota)
+        cursor.execute(sql, datos)
+        conexion.commit()
+        return True, "Alumno añadido correctamente."
+    except Error as error:
+        return False, f"Error: {error}"
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+# ====
+# BUSCAR ALUMNOS POR CURSO
+# ====
+
+def buscar_por_curso(curso):
+    conexion = conectar()
+    if conexion is None:
+        return []
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        sql = "SELECT dni, nombre, email, curso, nota FROM alumnos WHERE curso = %s ORDER BY nombre"
+        cursor.execute(sql, (curso,))
+        return cursor.fetchall()
+    except Error as error:
+        print(f"Error: {error}")
+        return []
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+# ====
+# BUSCAR ALUMNO POR DNI
+# ====
+
+def buscar_por_dni(dni):
+    conexion = conectar()
+    if conexion is None:
+        return None
+    cursor = conexion.cursor(dictionary=True)
+    try:
+        sql = "SELECT dni, nombre, email, curso, nota FROM alumnos WHERE dni = %s"
+        cursor.execute(sql, (dni,))
+        return cursor.fetchone()
+    except Error as error:
+        print(f"Error: {error}")
+        return None
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+# ====
+# BAJA DE ALUMNO
+# ====
+
+def baja_alumno(dni):
+    conexion = conectar()
+    if conexion is None:
+        return False
+    cursor = conexion.cursor()
+    try:
+        sql = "DELETE FROM alumnos WHERE dni = %s"
+        cursor.execute(sql, (dni,))
+        conexion.commit()
+        return cursor.rowcount > 0
+    except Error as error:
+        print(f"Error: {error}")
+        return False
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+# ====
+# OBTENER TODOS LOS CURSOS
+# ====
+
+def obtener_cursos():
+    conexion = conectar()
+    if conexion is None:
+        return []
+    cursor = conexion.cursor()
+    try:
+        sql = "SELECT DISTINCT curso FROM alumnos ORDER BY curso"
+        cursor.execute(sql)
+        resultados = cursor.fetchall()
+        return [fila[0] for fila in resultados]
+    except Error as error:
+        print(f"Error: {error}")
+        return []
+    finally:
+        cursor.close()
+        conexion.close()`;
+
+const DB_COLUMNS = [
+  { name: 'dni', type: 'VARCHAR', pk: true, description: 'Clave primaria. Identificador único del alumno.' },
+  { name: 'nombre', type: 'VARCHAR', pk: false, description: 'Nombre completo del alumno.' },
+  { name: 'email', type: 'VARCHAR', pk: false, description: 'Correo electrónico del alumno.' },
+  { name: 'curso', type: 'VARCHAR', pk: false, description: 'Curso en el que está matriculado.' },
+  { name: 'nota', type: 'FLOAT', pk: false, description: 'Nota media del alumno (0.0 a 10.0).' },
+];
+
+// ====== SYNTAX HIGHLIGHT ======
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function hiPy(code){
+  const re=/("""[\s\S]*?"""|'''[\s\S]*?''')|(#[^\n]*)|(f?"[^"\n]*"|f?'[^'\n]*')|\b(def|return|if|else|elif|try|except|finally|import|as|with|for|in|not|or|and|None|True|False|from|class)\b|\b(self|cursor|conexion|st|op2|con|Error)\b|\b(\d+\.?\d*)\b/g;
+  return esc(code).replace(re,(m,str3,com,str1,kw,dec,num)=>{
+    if(str3!==undefined)return '<span class="tok-str">'+str3+'</span>';
+    if(com!==undefined)return '<span class="tok-com">'+com+'</span>';
+    if(str1!==undefined)return '<span class="tok-str">'+str1+'</span>';
+    if(kw!==undefined)return '<span class="tok-kw">'+kw+'</span>';
+    if(dec!==undefined)return '<span class="tok-dec">'+dec+'</span>';
+    if(num!==undefined)return '<span class="tok-num">'+num+'</span>';
+    return m;
+  });
+}
+function hiSql(code){
+  const KW=['SELECT','FROM','WHERE','INSERT','INTO','VALUES','DELETE','UPDATE','SET','ORDER','BY','DISTINCT','AND','OR','ASC','DESC'];
+  let out=esc(code);
+  out=out.replace(/(--[^\n]*)/g,'<span class="tok-com">$1</span>');
+  out=out.replace(new RegExp('\\b('+KW.join('|')+')\\b','g'),'<span class="tok-kw">$1</span>');
+  out=out.replace(/(%s)/g,'<span class="tok-num">$1</span>');
+  return out;
+}
+const EMO={User:'👤',Shield:'🛡️',Code:'🐍',Database:'🗄️',Search:'🔍',Plus:'➕',CheckCircle:'✅',XCircle:'❌',List:'📋',Table:'📊',Info:'ℹ️',AlertTriangle:'⚠️',Trash:'🗑️',Trash2:'🗑️',UserPlus:'➕',BookOpen:'📚',UserMinus:'➖'};
+const TYPELBL={user:'Usuario',streamlit:'Interfaz Streamlit',python:'Lógica Python',connection:'Conexión BD',sql:'Consulta SQL',result:'Resultado',error:'Error / Rama'};
+
+// ====== BUILD TABS + PANELS ======
+const tabsEl=document.getElementById('tabs');
+const panelsEl=document.getElementById('panels');
+OPERATIONS.forEach((op,i)=>{
+  const tab=document.createElement('div');
+  tab.className='tab'+(i===0?' active':'');
+  tab.innerHTML=`<span class="dot" style="color:${op.color}"></span>${EMO[op.icon]||''} ${op.title}`;
+  tab.onclick=()=>{document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));tab.classList.add('active');document.getElementById('panel-'+op.id).classList.add('active');};
+  tabsEl.appendChild(tab);
+
+  const panel=document.createElement('div');
+  panel.className='panel'+(i===0?' active':'');
+  panel.id='panel-'+op.id;
+  let html=`<div class="op-head"><h3 style="color:${op.color}">${EMO[op.icon]||''} ${op.title}</h3><p>${op.subtitle}</p></div><div class="flow">`;
+  op.nodes.forEach((n,ni)=>{
+    const errEdge=op.edges.find(e=>e.from===n.id&&e.isError);
+    html+=`<div class="node t-${n.type}" data-op="${op.id}" data-node="${n.id}">
+      <div class="row">
+        <div class="nic">${EMO[n.icon]||'•'}</div>
+        <div class="ntxt"><small>${TYPELBL[n.type]}</small><h4>${n.label}</h4></div>
+        <span class="hintbtn">ver detalle →</span>
+      </div></div>`;
+    if(ni<op.nodes.length-1) html+=`<div class="connector"></div>`;
+    if(errEdge) html+=`<div class="branch"><span class="err">→ ${errEdge.label}</span></div>`;
+  });
+  html+=`</div>`;
+  panel.innerHTML=html;
+  panelsEl.appendChild(panel);
+});
+
+// ====== NODE CLICK -> MODAL ======
+const overlay=document.getElementById('overlay');
+const modal=document.getElementById('modal');
+document.addEventListener('click',e=>{
+  const node=e.target.closest('.node');
+  if(!node)return;
+  const op=OPERATIONS.find(o=>o.id===node.dataset.op);
+  const n=op.nodes.find(x=>x.id===node.dataset.node);
+  let h=`<div class="mhead"><div class="nic">${EMO[n.icon]||'•'}</div><div><small style="color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:.75rem">${TYPELBL[n.type]}</small><h3>${n.label}</h3></div><span class="close" id="closeM">✕</span></div>`;
+  h+=`<div class="desc">${n.description}</div>`;
+  if(n.code){h+=`<div class="lbl">🐍 Código Python</div><pre><code>${hiPy(n.code)}</code></pre>`;}
+  if(n.sql){h+=`<div class="lbl sql">🗄️ Consulta SQL</div><pre><code>${hiSql(n.sql)}</code></pre>`;}
+  if(n.successMessage){h+=`<div class="lbl ok">✅ Caso de éxito</div><div class="msg ok">${esc(n.successMessage)}</div>`;}
+  if(n.errorMessage){h+=`<div class="lbl err">⚠️ Mensaje de error</div><div class="msg err">${esc(n.errorMessage)}</div>`;}
+  if(n.errorCases&&n.errorCases.length){h+=`<div class="lbl err">❌ ¿Qué puede salir mal aquí?</div><ul class="cases">`+n.errorCases.map(c=>`<li>${esc(c)}</li>`).join('')+`</ul>`;}
+  modal.innerHTML=h;
+  overlay.classList.add('open');
+  document.getElementById('closeM').onclick=()=>overlay.classList.remove('open');
+});
+overlay.onclick=e=>{if(e.target===overlay)overlay.classList.remove('open');};
+document.addEventListener('keydown',e=>{if(e.key==='Escape')overlay.classList.remove('open');});
+
+// ====== DB SCHEMA ======
+const dbrows=document.getElementById('dbrows');
+DB_COLUMNS.forEach(c=>{
+  const r=document.createElement('div');r.className='db-row';
+  r.innerHTML=`<div class="key">${c.pk?'🔑':'○'}</div><div class="cn">${c.name}${c.pk?'<span class="pk-badge">PK</span>':''}</div><div class="ct">${c.type}</div><div class="cd">${c.description}</div>`;
+  dbrows.appendChild(r);
+});
+
+// ====== CODE VIEWER ======
+document.querySelector('#cv0 code').innerHTML=hiPy(SOURCE_15_APP);
+document.querySelector('#cv1 code').innerHTML=hiPy(SOURCE_OPERACIONES);
+document.querySelectorAll('.cv-tab').forEach(t=>{
+  t.onclick=()=>{document.querySelectorAll('.cv-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.cv-body').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.getElementById('cv'+t.dataset.cv).classList.add('active');};
+});
+
+// ====== STARFIELD ======
+const cv=document.getElementById('stars'),cx=cv.getContext('2d');let W,H,ps=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;ps=[];for(let i=0;i<120;i++)ps.push({x:Math.random()*W,y:Math.random()*H,z:Math.random()*2+.3,vy:Math.random()*.25+.05});}
+rs();addEventListener('resize',rs);
+function loop(){cx.clearRect(0,0,W,H);for(const p of ps){p.y+=p.vy;if(p.y>H)p.y=0;cx.globalAlpha=p.z/2.3;cx.fillStyle=p.z>1.6?'#4de1ff':(p.z>1?'#c18bff':'#ffffff');cx.beginPath();cx.arc(p.x,p.y,p.z,0,7);cx.fill();}
+// subtle connecting lines
+cx.globalAlpha=.12;cx.strokeStyle='#4de1ff';for(let i=0;i<ps.length;i++)for(let j=i+1;j<ps.length;j++){const dx=ps[i].x-ps[j].x,dy=ps[i].y-ps[j].y,d=dx*dx+dy*dy;if(d<9000){cx.beginPath();cx.moveTo(ps[i].x,ps[i].y);cx.lineTo(ps[j].x,ps[j].y);cx.stroke();}}
+requestAnimationFrame(loop);}loop();
+</script>
+<script type="module" src="./Algoritmo de Gestión de Alumnos · 3D Interactivo_files/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon="{&quot;version&quot;:&quot;2024.11.0&quot;,&quot;token&quot;:&quot;f0f03d0605bf45f1a3b17cf7d5e6861f&quot;,&quot;spa&quot;:2}" crossorigin="anonymous"></script>
+
+
+</body></html>
