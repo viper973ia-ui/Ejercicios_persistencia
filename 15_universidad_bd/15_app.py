@@ -34,7 +34,7 @@ st.divider()
 # ============================================================
 opcion = st.sidebar.radio(
     "Selecciona una opción:",
-    ["Alta de alumno", "Buscar por curso", "Buscar por DNI"]
+    ["Alta de alumno", "Buscar por curso", "Buscar por DNI","Actualizar alumno"]
 )
 
 # ============================================================
@@ -149,3 +149,55 @@ elif opcion == "Buscar por DNI":
                 st.warning("No existe ningún alumno con ese DNI.")
 
 
+# ============================================================
+# ACTUALIZAR ALUMNO
+# ============================================================
+elif opcion == "Actualizar alumno":
+    st.header("✏️ Actualizar datos de alumno")
+
+    dni_editar = st.text_input("Introduce el DNI del alumno a modificar:")
+    if st.button("Cargar datos", type="primary"):
+        if not dni_editar:
+            st.warning("Introduce un DNI.")
+        else:
+            alumno_encontrado = op2.buscar_por_dni(dni_editar.strip().upper())
+            if alumno_encontrado:
+                st.session_state["alumno_editar"] = alumno_encontrado
+            else:
+                st.session_state.pop("alumno_editar", None)
+                st.warning("No existe ningún alumno con ese DNI.")
+
+    # Si hay un alumno cargado en memoria, mostramos el formulario precargado
+    if "alumno_editar" in st.session_state:
+        alumno = st.session_state["alumno_editar"]
+        st.info(f"Editando al alumno con DNI: **{alumno['dni']}**")
+
+        with st.form("formulario_actualizar"):
+            nuevo_nombre = st.text_input("Nombre", value=alumno["nombre"])
+            nuevo_email = st.text_input("Email", value=alumno["email"])
+            nuevo_curso = st.text_input("Curso", value=alumno["curso"])
+            nueva_nota = st.number_input(
+                "Nota",
+                min_value=0.0,
+                max_value=10.0,
+                step=0.5,
+                value=float(alumno["nota"])
+            )
+            actualizar = st.form_submit_button("Guardar cambios")
+
+        if actualizar:
+            if not nuevo_nombre or not nuevo_email or not nuevo_curso:
+                st.warning("Debes completar todos los campos de texto.")
+            else:
+                correcto, mensaje = op2.actualizar_alumno(
+                    alumno["dni"],
+                    nuevo_nombre.strip(),
+                    nuevo_email.strip(),
+                    nuevo_curso.strip(),
+                    float(nueva_nota)
+                )
+                if correcto:
+                    st.success(mensaje)
+                    st.session_state.pop("alumno_editar", None)
+                else:
+                    st.error(mensaje)
