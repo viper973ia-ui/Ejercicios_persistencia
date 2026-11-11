@@ -13,11 +13,6 @@ de ese curso. En cada fila, aparecerá un botón para borrar a ese alumno
 y se muestran todos sus datos, si no existe, mensaje de advertencia.  """
 
 
-#  "Instalar librerías" pip install streamlit mysql-connector-python pandas
-
-# Instalar librerías necesarias:
-# pip install streamlit mysql-connector-python
-
 import streamlit as st
 import operaciones_bd as op2
 
@@ -148,3 +143,5 @@ elif opcion == "Buscar por DNI":
                     st.write(f"**Nota:** {alumno['nota']}")
             else:
                 st.warning("No existe ningún alumno con ese DNI.")
+
+
