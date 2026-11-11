@@ -103,7 +103,7 @@ elif opcion == "Buscar por curso":
                 columnas[4].markdown(
                                     f"<p style='font-size: 28px; font-weight: bold;'>{alumno['nota']}</p>",
                                     unsafe_allow_html=True 
-                )
+                )  # si quieres ajustar los píxeles exactos o cambiar el color,
 
                 with columnas[5]:
                     eliminar = st.button(
