@@ -1,0 +1,22 @@
+$eq – Igual a.
+
+$ne – Distinto de.
+
+$gt – Mayor que.
+
+$gte – Mayor o igual que.
+
+$lt – Menor que.
+
+$lte – Menor o igual que.
+
+$in – Coincide con alguno de los valores de una lista.
+
+$nin – No coincide con ninguno de los valores de una lista
+
+$or, $and, $not
+
+• $and: Une condiciones con un AND lógico; el documento debe cumplir todas.
+• $or: Une condiciones con un OR lógico; el documento debe cumplir al menos una.
+• $nor: Devuelve los documentos que no cumplen ninguna de las condiciones.
+• $not: Invierte el efecto de una expresión o predicado. 
