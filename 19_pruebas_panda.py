@@ -116,4 +116,4 @@ print(f"salario medio de informática: {df.query('departamento == \"informática
 # Quiero agruparlos por departamento y con la columna salario medio y edad máxima de cada departamento
 
 grupo=df.groupby("departamento").agg(salario_medio=("salario","mean"),edad_maxima=("edad","max"))
-print(grupo)
+print(grupo.sort_values(by=["salario_medio", "edad_maxima"]))
