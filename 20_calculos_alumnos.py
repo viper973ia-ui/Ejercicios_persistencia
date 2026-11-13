@@ -18,4 +18,4 @@ grupo=df.groupby("curso").agg(nota_mas_alta=("nota","max"))
 print(f"2.- La nota mas alta de cada curso es: ", grupo.sort_values(by=["nota_mas_alta"]))
 
 grupo=df.groupby("curso").agg(total_alumnos=("nombre","count"))
-print(f"El total de alumnos de cada curso es: ", grupo.sort_values(by=["total_alumnos"]))
+print(f"3.- El total de alumnos de cada curso es: ", grupo.sort_values(by=["total_alumnos"]))
