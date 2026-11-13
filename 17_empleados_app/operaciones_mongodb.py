@@ -2,6 +2,7 @@ import pymongo as py  # <-- ESTA LÍNEA ES LA QUE FALTA O NO ESTÁ GUARDADA
 
 
 from pymongo import MongoClient
+from bson.objectid import ObjectId
 
 URL = "mongodb://localhost:27017/"
 
@@ -60,3 +61,37 @@ def filtrar_por_salario(salario_min, salario_max):
     except Exception as e:
         print(f"Error al filtrar por salario: {e}")
         return []
+
+from bson.objectid import ObjectId
+
+def obtener_todos_empleados():
+    try:
+        with MongoClient(URL) as serv:
+            db = serv["empresa"]
+            col_empleados = db["empleados"]
+            
+            empleados = list(col_empleados.find())
+            for emp in empleados:
+                emp["_id"] = str(emp["_id"])
+            return empleados
+    except Exception as e:
+        print(f"Error al obtener todos los empleados: {e}")
+        return []
+
+def actualizar_empleados(lista_empleados):
+    try:
+        with MongoClient(URL) as serv:
+            db = serv["empresa"]
+            col_empleados = db["empleados"]
+            
+            for emp in lista_empleados:
+                id_empleado = ObjectId(emp["_id"])
+                datos_actualizar = {k: v for k, v in emp.items() if k != "_id"}
+                col_empleados.update_one(
+                    {"_id": id_empleado},
+                    {"$set": datos_actualizar}
+                )
+            return True, "Los datos de los empleados se han actualizado correctamente."
+    except Exception as e:
+        print(f"Error al actualizar los empleados: {e}")
+        return False, f"Error al actualizar los empleados: {e}"

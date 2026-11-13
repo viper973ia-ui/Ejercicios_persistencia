@@ -36,7 +36,7 @@ st.divider()
 # ============================================================
 opcion = st.sidebar.radio(
     "Selecciona una opción:",
-    ["Alta de empleado", "Filtar por departamento", "Filtar por rango salarial"]
+    ["Alta de empleado", "Filtar por departamento", "Filtar por rango salarial", "Actualizar datos empleados"]
 )
     
     
@@ -136,3 +136,50 @@ elif opcion == "Filtar por rango salarial":
                         
             except ValueError:
                 st.error("Por favor, introduce valores numéricos válidos (sin letras ni símbolos).")
+
+# ========================================
+#  ACTUALIZACIÓN DE DATOS
+# ========================================
+
+# Muestra la tabla con todos los empleados, permitiendo la modificación de sus datos. Mediante
+# un botón 'actualizar', se grabarán los cambios.  Utilizar data_editor(datos)
+
+# ========================================
+#  ACTUALIZACIÓN DE DATOS
+# ========================================
+if opcion == "Actualizar datos empleados":
+    st.header("📋 Listado y actualización de empleados")
+    st.write("Aquí tienes todos los empleados de la base de datos. Haz doble clic en cualquier celda para editarla y pulsa **Actualizar**.")
+
+    # Carga automáticamente todos los empleados al abrir la aplicación
+    empleados = opmg.obtener_todos_empleados()
+
+    if not empleados:
+        st.info("No hay empleados registrados en la base de datos.")
+    else:
+        # Muestra la tabla editable con todos los registros
+        datos_editados = st.data_editor(
+            empleados,
+            use_container_width=True,
+            key="editor_empleados"
+        )
+
+        # Botón para guardar los cambios en MongoDB
+        if st.button("Actualizar"):
+            for emp in datos_editados:
+                if "empleado" in emp and emp["empleado"]:
+                    emp["empleado"] = str(emp["empleado"]).strip().upper()
+                if "departamento" in emp and emp["departamento"]:
+                    emp["departamento"] = str(emp["departamento"]).strip().upper()
+                if "edad" in emp:
+                    emp["edad"] = int(emp["edad"])
+                if "salario" in emp:
+                    emp["salario"] = int(emp["salario"])
+
+            correcto, mensaje = opmg.actualizar_empleados(datos_editados)
+
+            if correcto:
+                st.success(mensaje)
+                st.rerun() # Recarga la tabla automáticamente con los datos actualizados
+            else:
+                st.error(mensaje)
