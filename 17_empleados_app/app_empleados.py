@@ -144,9 +144,6 @@ elif opcion == "Filtar por rango salarial":
 # Muestra la tabla con todos los empleados, permitiendo la modificación de sus datos. Mediante
 # un botón 'actualizar', se grabarán los cambios.  Utilizar data_editor(datos)
 
-# ========================================
-#  ACTUALIZACIÓN DE DATOS
-# ========================================
 if opcion == "Actualizar datos empleados":
     st.header("📋 Listado y actualización de empleados")
     st.write("Aquí tienes todos los empleados de la base de datos. Haz doble clic en cualquier celda para editarla y pulsa **Actualizar**.")
@@ -161,6 +158,7 @@ if opcion == "Actualizar datos empleados":
         datos_editados = st.data_editor(
             empleados,
             use_container_width=True,
+            disabled=["_id"],  # Bloquea la edición de la columna 'id'
             key="editor_empleados"
         )
 
