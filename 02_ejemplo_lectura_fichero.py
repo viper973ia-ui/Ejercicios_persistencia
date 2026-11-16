@@ -25,18 +25,14 @@ with open("dias.txt","r") as f:
         linea=f.readline()
 with open("dias.txt","r") as f:
     lista_dias=f.readlines()
-texto=" aaa   \n \t"
-texto_limpio=texto.strip()
-print(texto)
-print(texto_limpio)
+    texto=" aaa   \n \t"
+    texto_limpio=texto.strip()
+    print(texto)
+    print(texto_limpio)
 
-lista_limpia=list(map(lambda x:x.strip(),lista_dias))
-                    
-print(lista_limpia)
+    lista_limpia=list(map(lambda x:x.strip(),lista_dias))
+    print(lista_limpia)
 
-lista_limpia_compr_lista=[a.strip for a in lista_dias]
+    lista_limpia_compr_lista=[a.strip for a in lista_dias]
 
-print(lista_limpia_compr_lista)
-    
-    
-    
+    print(lista_limpia_compr_lista)

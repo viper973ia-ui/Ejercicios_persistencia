@@ -19,7 +19,7 @@ def ventas_totales_tienda(df, tienda):
     df_filtrado = df[df["nombre_tienda"].str.lower() == tienda.lower()]
     if df_filtrado.empty:
         return None
-        return df_filtrado["facturacion"].sum()
+    return df_filtrado["facturacion"].sum()
 
 
 # 2. Mostrar el mayor gasto de personal de tiendas

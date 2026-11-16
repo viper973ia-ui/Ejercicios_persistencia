@@ -48,5 +48,48 @@ if total_ventas is not None:
   print(f"Mes con mayor facturación de '{tienda_buscada}': {mejor_mes}")
 else:
   print(f"No se encontraron datos para la tienda '{tienda_buscada}'.")
+  
+# Nombre de la tienda más antigua  
+
 
 print(f"Mayor gasto de personal entre todas las tiendas: {max_gasto_general}")
+
+tienda_antigua, año_apertura = df.loc[
+    df["año_apertura"].idxmin(), ["nombre_tienda", "año_apertura"]
+]
+print("La tienda más antigua es:"
+    *df.loc[df["año_apertura"].idxmin(), ["nombre_tienda", "año_apertura"]],
+    sep=" - ",
+)
+
+
+""" # Solución del profesor
+# import pandas as pd
+dt=pd.read_csv("ventas_tiendas.csv")
+""" #tienda=input("Introduce el nombre de la tienda: ")
+
+
+""" dtquery=dt.query("nombre_tienda==@tienda")
+#dtquery=dt[dt["nombre_tienda"]==tienda]
+print(f"La facturación total de la tienda {tienda}  es {dtquery["facturacion"].sum()}") """ """
+
+#mostrar mayor gasto de personal de todas las empresas
+dfgrupo=dt.groupby("nombre_tienda").agg(gastos_personal=("gastos_personal","sum"))
+print(dfgrupo["gastos_personal"].max())
+
+print(dt.groupby("nombre_tienda")["gastos_personal"].sum().max()) 
+
+tienda=input("Introduce el nombre de la tienda: ")
+
+dtquery=dt.query("nombre_tienda==@tienda")
+print(dtquery)
+
+print("El mes con mayor facturación es: ",  dtquery
+      .sort_values(by="facturacion",ascending=False) #ordena de mayor a menor
+      .iloc[0] #se queda con el primer registro del dataframe ordenado de MAYOR a menor
+      .to_dict()["mes"]) #convierte en un diccionario y extrae la propiedad deseada 
+
+# Nombre de la tienda más antigua
+
+dtquery_antiguedad=(dt.groupby("nombre_tienda")["año_apertura"].min())
+print ("La tienda más antigua es:", dtquery_antiguedad) """
