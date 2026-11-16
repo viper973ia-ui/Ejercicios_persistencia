@@ -42,10 +42,10 @@ else:
 
 # 2. Tienda con mayor gasto de personal acumulado (nombre e importe total)
 fila_max_gasto = (
-    df.group_by("nombre_tienda")
-    .agg(pl.col("gastos_personal").sum())
-    .sort("gastos_personal", descending=True)
-    .row(0, named=True)
+                df.group_by("nombre_tienda")
+                .agg(pl.col("gastos_personal").sum())
+                .sort("gastos_personal", descending=True)
+                .row(0, named=True)
 )
 
 print(
