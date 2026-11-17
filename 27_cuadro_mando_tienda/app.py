@@ -56,7 +56,7 @@ st.sidebar.divider()
 
 # Botón en el sidebar actualizado
 boton_grafico = st.sidebar.button(
-    "Ver Gráfico de ventas totales por tienda", 
+    "Ver Gráfico de gastos totales por tienda", 
     on_click=limpiar_filtros_para_grafico,
     use_container_width=True
 )
@@ -103,7 +103,7 @@ elif opcion_2 is not None:
 # Bloque condicional cuando se pulsa el botón del gráfico
 elif boton_grafico:
     st.markdown(
-    "<h1 style='text-align: center;'>Distribución de ventas totales por tienda</h1>", 
+    "<h1 style='text-align: center;'>Distribución de gastos totales por tienda</h1>", 
     unsafe_allow_html=True
     ) 
     
@@ -111,13 +111,13 @@ elif boton_grafico:
     df_total = (
         pl.read_csv("ventas_tienda.csv")
         .group_by("nombre_tienda")
-        .agg(pl.col("facturacion").sum())
-        .sort("facturacion", descending=True)
+        .agg(pl.col("gastos_personal").sum())
+        .sort("gastos_personal", descending=True)
     )
-
+    st.write(df_total)
     # 2. Extraemos las columnas como listas de Python para Matplotlib
     tiendas = df_total["nombre_tienda"].to_list()
-    ventas = df_total["facturacion"].to_list()
+    ventas = df_total["gastos_personal"].to_list()
 
     # 3. Generamos el gráfico de tarta
     fig, ax = plt.subplots(figsize=(6, 4))
@@ -127,7 +127,7 @@ elif boton_grafico:
         autopct="%1.1f%%",
         startangle=90
     )
-    ax.set_title("Porcentaje de facturación por tienda")
+    ax.set_title("Porcentaje de gastos por tienda")
 
     # 4. Mostramos el gráfico centrado
     col_izq, col_centro, col_der = st.columns([1, 2, 1])
