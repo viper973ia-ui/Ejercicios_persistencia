@@ -102,7 +102,10 @@ elif opcion_2 is not None:
 
 # Bloque condicional cuando se pulsa el botón del gráfico
 elif boton_grafico:
-    st.title("Distribución de ventas totales por tienda")
+    st.markdown(
+    "<h1 style='text-align: center;'>Distribución de ventas totales por tienda</h1>", 
+    unsafe_allow_html=True
+    ) 
     
     # 1. Leemos el CSV y agrupamos por tienda sumando la facturación
     df_total = (
