@@ -56,3 +56,5 @@ def datos_por_mes(mes):
         .drop("mes")  # Ocultamos la columna "mes" porque ya va en el título
         .collect()
     )
+    
+    

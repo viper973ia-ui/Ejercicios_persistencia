@@ -14,6 +14,7 @@
 
 import streamlit as st
 import polars as pl
+import matplotlib.pyplot as plt
 import tiendas_repositorio as tr
 
 st.set_page_config(page_title="Cuadro de Mando Tiendas", layout="wide")
@@ -21,14 +22,18 @@ st.set_page_config(page_title="Cuadro de Mando Tiendas", layout="wide")
 # --- SIDEBAR ---
 st.sidebar.header("Filtros")
 
-# 1. Creamos funciones pequeñas (callbacks) para limpiar el otro desplegable al elegir uno
+# Callbacks para limpiar los otros filtros cuando se selecciona uno
 def limpiar_mes():
     st.session_state["select_mes"] = None
 
 def limpiar_tienda():
     st.session_state["select_tienda"] = None
 
-# 2. Ambos empiezan vacíos (index=None) y se limpian mutuamente al cambiar
+def limpiar_filtros_para_grafico():
+    st.session_state["select_tienda"] = None
+    st.session_state["select_mes"] = None
+
+# Desplegables existentes
 opcion_1 = st.sidebar.selectbox(
     "Selecciona una tienda:",
     tr.lista_tiendas(),
@@ -47,9 +52,17 @@ opcion_2 = st.sidebar.selectbox(
     on_change=limpiar_tienda
 )
 
+st.sidebar.divider()
+
+# Botón en el sidebar actualizado
+boton_grafico = st.sidebar.button(
+    "Ver Gráfico de ventas totales por tienda", 
+    on_click=limpiar_filtros_para_grafico,
+    use_container_width=True
+)
+
 # --- ÁREA PRINCIPAL CONDICIONAL ---
 if opcion_1 is not None:
-    # SOLO se muestra si elegiste una tienda
     st.title(f"Resultados de la tienda: {opcion_1}")
     df_tienda = tr.datos_por_tienda(opcion_1)
     st.dataframe(df_tienda, use_container_width=True, hide_index=True)
@@ -70,7 +83,6 @@ if opcion_1 is not None:
     col3.metric("Mes con mayor facturación", mes_top)
 
 elif opcion_2 is not None:
-    # SOLO se muestra si elegiste un mes
     st.title(f"Resultados del mes: {opcion_2}")
     df_mes = tr.datos_por_mes(opcion_2)
     st.dataframe(df_mes, use_container_width=True, hide_index=True)
@@ -88,6 +100,37 @@ elif opcion_2 is not None:
     col_m1.metric("Media de facturación (todas las tiendas)", f"{media_facturacion:,.2f} €")
     col_m2.metric("Tienda con mayor gasto de personal", tienda_mayor_gasto)
 
+# Bloque condicional cuando se pulsa el botón del gráfico
+elif boton_grafico:
+    st.title("Distribución de ventas totales por tienda")
+    
+    # 1. Leemos el CSV y agrupamos por tienda sumando la facturación
+    df_total = (
+        pl.read_csv("ventas_tienda.csv")
+        .group_by("nombre_tienda")
+        .agg(pl.col("facturacion").sum())
+        .sort("facturacion", descending=True)
+    )
+
+    # 2. Extraemos las columnas como listas de Python para Matplotlib
+    tiendas = df_total["nombre_tienda"].to_list()
+    ventas = df_total["facturacion"].to_list()
+
+    # 3. Generamos el gráfico de tarta
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.pie(
+        ventas,
+        labels=tiendas,
+        autopct="%1.1f%%",
+        startangle=90
+    )
+    ax.set_title("Porcentaje de facturación por tienda")
+
+    # 4. Mostramos el gráfico centrado
+    col_izq, col_centro, col_der = st.columns([1, 2, 1])
+    with col_centro:
+        st.pyplot(fig)
+
 else:
-    # Mensaje inicial cuando ninguno de los dos está seleccionado
-    st.info("👈 Selecciona una tienda o un mes en el panel lateral para ver sus resultados.")
+    st.info("👈 Selecciona una tienda, un mes o pulsa el botón del gráfico en el panel lateral.")
+
