@@ -19,11 +19,11 @@ lazy_df = pl.scan_csv("ventas_tienda.csv")
 
 def lista_tiendas():
     lista_tiendas=(
-    lazy_df
-    .select(pl.col("nombre_tienda").drop_nulls().unique().sort())
-    .collect()
-    .to_series()
-    .to_list()
+        lazy_df
+        .select(pl.col("nombre_tienda").drop_nulls().unique().sort())
+        .collect()
+        .to_series()
+        .to_list()
     )
     return lista_tiendas
 
