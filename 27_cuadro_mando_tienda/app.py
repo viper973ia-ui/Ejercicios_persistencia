@@ -114,7 +114,12 @@ elif boton_grafico:
         .agg(pl.col("gastos_personal").sum())
         .sort("gastos_personal", descending=True)
     )
+    
+    # ************************************   PRUEBA de DATAFRAME   ********************
     st.write(df_total)
+    # *********************************************************************************
+    
+    
     # 2. Extraemos las columnas como listas de Python para Matplotlib
     tiendas = df_total["nombre_tienda"].to_list()
     ventas = df_total["gastos_personal"].to_list()
