@@ -191,7 +191,7 @@ def obtener_opciones(datos: pd.DataFrame) -> dict[str, list[Any]]:
         "curso": sorted(datos["curso"].dropna().unique().tolist()),
         "asignatura": sorted(datos["asignatura"].dropna().unique().tolist()),
         "grupo": sorted(datos["grupo"].dropna().unique().tolist()),
-        "evaluacion": sorted(datos["evaluacion"].dropna().unique().tolist()),
+        "evaluacion": sorted(datos["evaluacion"].dropna().unique().tolist(),
     }
 
 
