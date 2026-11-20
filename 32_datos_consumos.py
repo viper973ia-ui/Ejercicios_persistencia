@@ -73,3 +73,6 @@ print(f"6. Días con consumo >20% inferior a la media (< {limite_inferior:.2f} k
 tarifas = np.array([0.02, 0.02, 0.02, 0.02, 0.02, 0.018, 0.018])
 coste_total = np.sum(consumos * tarifas)
 print(f"7. Coste total semanal: {coste_total:.2f} €")
+
+
+##8. Mostrar consumo de cada día
